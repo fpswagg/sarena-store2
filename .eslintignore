@@ -1,0 +1,4 @@
+# Prisma schema - false positive warning about url property
+# Prisma 6.19.0 supports url in datasource, this is not an error
+prisma/schema.prisma
+

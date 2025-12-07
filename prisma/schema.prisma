@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPPLIER
+  USER
+}
+
+enum ComplaintStatus {
+  RECEIVED
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum RatingLevel {
+  CAILLOU      // "Nul comme un caillou"
+  TORTUE       // "Ça avance doucement"
+  COOL         // "Carrément cool"
+  FEU          // "Ça envoie du feu"
+  LEGENDAIRE   // "Légendaire Supreme"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  supabaseId    String?   @unique
+  fullName      String?
+  email         String?   @unique
+  phone         String?
+  avatar        String?
+  role          Role      @default(USER)
+  emailVerified DateTime?
+  image         String?
+
+  products   Product[]
+  ratings    Rating[]
+  complaints Complaint[]
+  assigned   Complaint[] @relation("AdminAssigned")
+  logs       Log[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  
+  // Translated fields stored as JSON: { "fr": "...", "en": "..." }
+  name      Json
+  shortDesc Json
+  longDesc  Json
+  
+  price     Float
+  stock     Int
+  city      String
+  thumbnail String
+  images    String[]
+
+  createdAt DateTime @default(now())
+
+  isNew Boolean @default(false)
+
+  supplierId String
+  supplier   User   @relation(fields: [supplierId], references: [id])
+
+  ratings      Rating[]
+  complaints   Complaint[]
+  interactions Interaction[]
+  stats        ProductStat?
+}
+
+model Rating {
+  id      String      @id @default(uuid())
+  level   RatingLevel
+  comment String?
+
+  userId    String
+  productId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Complaint {
+  id      String          @id @default(uuid())
+  message String
+  status  ComplaintStatus @default(RECEIVED)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  assignedAdminId String
+  assignedAdmin   User   @relation("AdminAssigned", fields: [assignedAdminId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Interaction {
+  id        String  @id @default(uuid())
+  productId String
+  userIp    String?
+
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model ProductStat {
+  id        String @id @default(uuid())
+  productId String @unique
+
+  views      Int   @default(0)
+  clicks     Int   @default(0)
+  complaints Int   @default(0)
+  ratingAvg  Float @default(0)
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Log {
+  id String @id @default(uuid())
+
+  userId   String
+  userRole Role
+
+  action   String
+  target   String
+  targetId String?
+
+  ip String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}

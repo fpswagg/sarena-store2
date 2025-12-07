@@ -1,0 +1,264 @@
+/* Fonts - Poppins for headings, Inter for body, Fredoka for badges */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@config '../../tailwind.config.js';
+
+:root {
+  --font-heading: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-badge: 'Fredoka', 'Comic Sans MS', cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-badge {
+  font-family: var(--font-badge);
+}
+
+/* Headings use Poppins */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* Focus states for accessibility */
+:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+}
+
+::selection {
+  background: oklch(var(--p) / 0.25);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(var(--b2));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--p) / 0.4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--p) / 0.6);
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-pink {
+  background: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow {
+  box-shadow: 0 0 40px oklch(var(--p) / 0.35);
+}
+
+.glow-sm {
+  box-shadow: 0 0 20px oklch(var(--p) / 0.25);
+}
+
+.glow-pink {
+  box-shadow: 0 0 40px rgba(236, 72, 153, 0.3);
+}
+
+/* Glass effect */
+.glass {
+  background: oklch(var(--b1) / 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid oklch(var(--bc) / 0.1);
+}
+
+.glass-yellow {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(245, 158, 11, 0.06));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+/* Card depth */
+.card-depth {
+  box-shadow:
+    0 1px 3px oklch(var(--bc) / 0.08),
+    0 4px 12px oklch(var(--bc) / 0.04);
+}
+
+.card-depth-hover {
+  box-shadow:
+    0 4px 12px oklch(var(--p) / 0.12),
+    0 8px 24px oklch(var(--bc) / 0.08);
+}
+
+/* Blob decorative shapes */
+.blob {
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  animation: blob-morph 8s ease-in-out infinite;
+}
+
+@keyframes blob-morph {
+  0%,
+  100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  }
+  25% {
+    border-radius: 58% 42% 30% 70% / 55% 45% 55% 45%;
+  }
+  50% {
+    border-radius: 70% 30% 50% 50% / 45% 55% 45% 55%;
+  }
+  75% {
+    border-radius: 30% 70% 70% 30% / 55% 45% 55% 45%;
+  }
+}
+
+/* Reduced motion: disable blob animation */
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none;
+    border-radius: 50%;
+  }
+}
+
+/* Badge cartoon styles */
+.badge-nouveau {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #000;
+  font-family: var(--font-badge);
+}
+
+.badge-populaire {
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: #fff;
+  font-family: var(--font-badge);
+}
+
+.badge-limited {
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  color: #fff;
+  font-family: var(--font-badge);
+}
+
+/* Section padding utility */
+.section-padding {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+/* Container utility */
+.container-wide {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-wide {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Modal backdrop blur */
+.modal-backdrop-blur {
+  backdrop-filter: blur(8px);
+}
+
+/* WhatsApp button special styles */
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white;
+  border: none;
+}
+
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
