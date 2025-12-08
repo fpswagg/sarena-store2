@@ -116,44 +116,39 @@ export function TeamSection({ members }: TeamSectionProps) {
 export const defaultTeamMembers: TeamMember[] = [
   {
     id: '1',
-    name: 'Paul Nguema',
-    role: 'CEO',
-    avatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+    name: 'fpswagg',
+    role: 'fpswagg',
+    avatar: '/fpswagg.jpg',
     socialMedia: [
-      { platform: 'linkedin', url: 'https://linkedin.com/in/paul-nguema' },
-      { platform: 'twitter', url: 'https://twitter.com/paulnguema' },
-      { platform: 'email', url: 'mailto:paul@sarenastore.cm' },
+      { platform: 'github', url: 'https://github.com/fpswagg' },
+      { platform: 'twitter', url: 'https://twitter.com/fpswagg' },
+      { platform: 'linkedin', url: 'https://linkedin.com/in/fpswagg' },
+      { platform: 'tiktok', url: 'https://tiktok.com/@fpswagg' },
     ],
   },
   {
     id: '2',
-    name: 'Marie Ngo',
-    role: 'Produits',
-    avatar:
-      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop&crop=face',
+    name: 'Dyllan Binam',
+    role: 'dyllan_bnm',
+    avatar: '/dyllan_bnm.png',
     socialMedia: [
-      { platform: 'instagram', url: 'https://instagram.com/mariengo' },
-      { platform: 'facebook', url: 'https://facebook.com/mariengo' },
+      { platform: 'instagram', url: 'https://instagram.com/dyllan_bnm' },
+      { platform: 'twitter', url: 'https://twitter.com/dyllan_bnm' },
+      { platform: 'tiktok', url: 'https://tiktok.com/@dyllan_bnm' },
     ],
   },
   {
     id: '3',
-    name: 'Jean Mvondo',
-    role: 'Support',
-    avatar:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face',
-    socialMedia: [
-      { platform: 'whatsapp', url: 'https://wa.me/237690000000' },
-      { platform: 'email', url: 'mailto:jean@sarenastore.cm' },
-    ],
+    name: 'Maenhout Stef',
+    role: 'Mr.Teddy',
+    avatar: '/pp.png',
+    // No social media - will show message in dialog
   },
   {
     id: '4',
-    name: 'Aïcha Bello',
-    role: 'Livraison',
-    avatar:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
+    name: 'Akera Jerry',
+    role: 'Akera Jerry',
+    avatar: '/pp.png',
     // No social media - will show message in dialog
   },
 ]
