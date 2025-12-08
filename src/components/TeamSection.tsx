@@ -84,15 +84,17 @@ export function TeamSection({ members }: TeamSectionProps) {
                 </div>
 
                 {/* Role badge */}
-                <motion.span
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-base-100 border border-base-200 text-[10px] font-badge font-medium text-primary shadow-sm whitespace-nowrap"
-                >
-                  {member.role}
-                </motion.span>
+                {member.role && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-base-100 border border-base-200 text-[10px] font-badge font-medium text-primary shadow-sm whitespace-nowrap"
+                  >
+                    {member.role}
+                  </motion.span>
+                )}
               </motion.div>
 
               <h3 className="font-heading font-semibold text-sm group-hover:text-primary transition-colors">
@@ -116,7 +118,7 @@ export function TeamSection({ members }: TeamSectionProps) {
 export const defaultTeamMembers: TeamMember[] = [
   {
     id: '1',
-    name: 'fpswagg',
+    name: 'François-Philippe',
     role: 'fpswagg',
     avatar: '/fpswagg.jpg',
     socialMedia: [
@@ -124,6 +126,7 @@ export const defaultTeamMembers: TeamMember[] = [
       { platform: 'twitter', url: 'https://twitter.com/fpswagg' },
       { platform: 'linkedin', url: 'https://linkedin.com/in/fpswagg' },
       { platform: 'tiktok', url: 'https://tiktok.com/@fpswagg' },
+      { platform: 'snapchat', url: 'https://snapchat.com/add/fpswagg' },
     ],
   },
   {
@@ -135,19 +138,19 @@ export const defaultTeamMembers: TeamMember[] = [
       { platform: 'instagram', url: 'https://instagram.com/dyllan_bnm' },
       { platform: 'twitter', url: 'https://twitter.com/dyllan_bnm' },
       { platform: 'tiktok', url: 'https://tiktok.com/@dyllan_bnm' },
+      { platform: 'snapchat', url: 'https://snapchat.com/add/dyllan_bnm' },
     ],
   },
   {
     id: '3',
     name: 'Maenhout Stef',
     role: 'Mr.Teddy',
-    avatar: '/pp.png',
+    avatar: '/mr_teddy.png',
     // No social media - will show message in dialog
   },
   {
     id: '4',
     name: 'Akera Jerry',
-    role: 'Akera Jerry',
     avatar: '/pp.png',
     // No social media - will show message in dialog
   },

@@ -83,7 +83,9 @@ export function TeamMemberDialog({ isOpen, onClose, member }: TeamMemberDialogPr
                     sizes="96px"
                   />
                 </div>
-                <p className="text-sm text-base-content/60 font-medium">{member.role}</p>
+                {member.role && (
+                  <p className="text-sm text-base-content/60 font-medium">{member.role}</p>
+                )}
                 {member.description && (
                   <p className="text-sm text-base-content/70 mt-2 max-w-sm mx-auto">
                     {member.description}
