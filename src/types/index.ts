@@ -133,6 +133,7 @@ export type TeamMember = {
   name: string
   role: string
   avatar: string
+  description?: string
   socialMedia?: SocialMediaLink[]
 }
 
