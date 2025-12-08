@@ -2,7 +2,7 @@
 
 import React, { type ComponentType } from 'react'
 import { SocialMediaPlatform } from '@/types'
-import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiGithub, FiYoutube, FiPhone, FiMail } from 'react-icons/fi'
+import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiGithub, FiYoutube, FiPhone, FiMail, FiLink } from 'react-icons/fi'
 
 // TikTok icon component (using SVG since react-icons doesn't have TikTok)
 const TikTokIcon: ComponentType<{ className?: string }> = ({ className }) => {
@@ -20,22 +20,6 @@ const TikTokIcon: ComponentType<{ className?: string }> = ({ className }) => {
   )
 }
 
-// Snapchat icon component (using SVG since react-icons doesn't have Snapchat)
-// Snapchat ghost logo - simplified ghost shape
-const SnapchatIcon: ComponentType<{ className?: string }> = ({ className }) => {
-  return React.createElement(
-    'svg',
-    {
-      className,
-      viewBox: '0 0 24 24',
-      fill: 'currentColor',
-      xmlns: 'http://www.w3.org/2000/svg',
-    },
-    React.createElement('path', {
-      d: 'M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V22h4v-.2c4.56-.93 8-4.96 8-9.8 0-5.52-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3-8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm6 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-3 3c1.5 0 2.5-.5 2.5-1.5h-5c0 1 1 1.5 2.5 1.5z',
-    })
-  )
-}
 
 // Social media logos/icons mapping
 export const SOCIAL_MEDIA_LOGOS: Record<SocialMediaPlatform, ComponentType<{ className?: string }>> = {
@@ -48,7 +32,7 @@ export const SOCIAL_MEDIA_LOGOS: Record<SocialMediaPlatform, ComponentType<{ cla
   whatsapp: FiPhone,
   email: FiMail,
   tiktok: TikTokIcon,
-  snapchat: SnapchatIcon,
+  snapchat: FiLink,
 }
 
 // Social media platform labels
