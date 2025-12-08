@@ -146,7 +146,10 @@ export const defaultTeamMembers: TeamMember[] = [
     name: 'Maenhout Stef',
     role: 'Mr.Teddy',
     avatar: '/mr_teddy.png',
-    // No social media - will show message in dialog
+    socialMedia: [
+      { platform: 'instagram', url: 'https://www.instagram.com/mr.teddy343' },
+      { platform: 'tiktok', url: 'https://tiktok.com/@mr.teddy343' },
+    ],
   },
   {
     id: '4',
