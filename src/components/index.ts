@@ -7,6 +7,7 @@ export { ProductGrid } from './ProductGrid'
 // Sections
 export { HeroSection } from './HeroSection'
 export { TeamSection, defaultTeamMembers } from './TeamSection'
+export { TeamMemberDialog } from './TeamMemberDialog'
 export { ComplaintForm, ComplaintSection } from './ComplaintForm'
 export { RatingModal } from './RatingModal'
 export { LogsExport, logsToCSV, downloadFile } from './LogsExport'

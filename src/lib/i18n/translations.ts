@@ -15,7 +15,7 @@ const fr = {
   },
 
   hero: {
-    badge: '🔒 Sécurisé & Fiable',
+    badge: 'Sécurisé & Fiable',
     title: 'Shopping',
     titleHighlight: 'de Confiance',
     subtitle:
@@ -30,6 +30,7 @@ const fr = {
   products: {
     title: 'Nos Produits',
     subtitle: 'Une sélection de produits premium pour vous',
+    badge: 'Nos produits',
     all: 'Tous',
     new: 'Nouveautés',
     popular: 'Populaires',
@@ -59,11 +60,15 @@ const fr = {
   team: {
     title: 'Notre Équipe',
     subtitle: 'Des passionnés à votre service',
+    badge: 'Notre équipe',
+    socialMedia: 'Réseaux sociaux',
+    noSocialMedia: 'Aucun réseau social disponible pour le moment.',
   },
 
   contact: {
     title: 'Une Question ?',
     subtitle: 'Notre équipe est là pour vous aider',
+    badge: 'Contact',
     report: 'Signaler un problème',
     supplierNote: 'Les fournisseurs ne peuvent pas envoyer de plaintes.',
     loginNote: 'Connectez-vous pour nous contacter.',
@@ -144,7 +149,7 @@ const en: typeof fr = {
   },
 
   hero: {
-    badge: '🔒 Secure & Trusted',
+    badge: 'Secure & Trusted',
     title: 'Trusted',
     titleHighlight: 'Shopping',
     subtitle:
@@ -159,6 +164,7 @@ const en: typeof fr = {
   products: {
     title: 'Our Products',
     subtitle: 'A selection of premium products for you',
+    badge: 'Our Products',
     all: 'All',
     new: 'New',
     popular: 'Popular',
@@ -188,11 +194,15 @@ const en: typeof fr = {
   team: {
     title: 'Our Team',
     subtitle: 'Passionate people at your service',
+    badge: 'Our Team',
+    socialMedia: 'Social Media',
+    noSocialMedia: 'No social media available at the moment.',
   },
 
   contact: {
     title: 'Got a Question?',
     subtitle: 'Our team is here to help',
+    badge: 'Contact',
     report: 'Report an issue',
     supplierNote: 'Suppliers cannot submit complaints.',
     loginNote: 'Log in to contact us.',

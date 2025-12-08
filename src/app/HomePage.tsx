@@ -131,7 +131,7 @@ export function HomePage({ products, whatsappNumber }: HomePageProps) {
               viewport={{ once: true }}
               className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-badge font-medium mb-4"
             >
-              🛍️ Nos produits
+              {t.products.badge}
             </motion.span>
             <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-3">{t.products.title}</h2>
             <p className="text-base-content/60 max-w-md mx-auto">{t.products.subtitle}</p>
@@ -162,7 +162,7 @@ export function HomePage({ products, whatsappNumber }: HomePageProps) {
               viewport={{ once: true }}
               className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-badge font-medium mb-4"
             >
-              💬 Contact
+              {t.contact.badge}
             </motion.span>
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center mx-auto mb-4">
               <FiMessageCircle className="w-7 h-7 text-secondary" />

@@ -119,13 +119,21 @@ export const BADGES: Record<ProductBadge, { label: string; emoji: string; color:
   },
 }
 
+// Social media platform type
+export type SocialMediaPlatform = 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'github' | 'youtube' | 'whatsapp' | 'email'
+
+export type SocialMediaLink = {
+  platform: SocialMediaPlatform
+  url: string
+}
+
 // Team member type
 export type TeamMember = {
   id: string
   name: string
   role: string
   avatar: string
-  description: string
+  socialMedia?: SocialMediaLink[]
 }
 
 // Log export format

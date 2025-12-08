@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { TeamMember } from '@/types'
 import { useI18n } from '@/lib/i18n/context'
 import { fadeUp, staggerContainer } from '@/lib/motion'
+import { TeamMemberDialog } from './TeamMemberDialog'
 
 interface TeamSectionProps {
   members: TeamMember[]
@@ -12,6 +14,18 @@ interface TeamSectionProps {
 
 export function TeamSection({ members }: TeamSectionProps) {
   const { t } = useI18n()
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const handleMemberClick = (member: TeamMember) => {
+    setSelectedMember(member)
+    setIsDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+    setSelectedMember(null)
+  }
 
   return (
     <section id="equipe" className="py-16 sm:py-20 bg-base-200/30 relative overflow-hidden">
@@ -34,7 +48,7 @@ export function TeamSection({ members }: TeamSectionProps) {
             viewport={{ once: true }}
             className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-badge font-medium mb-4"
           >
-            👥 Notre équipe
+            {t.team.badge}
           </motion.span>
           <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-3">{t.team.title}</h2>
           <p className="text-base-content/60 max-w-md mx-auto">{t.team.subtitle}</p>
@@ -52,7 +66,8 @@ export function TeamSection({ members }: TeamSectionProps) {
               key={member.id}
               variants={fadeUp}
               whileHover={{ y: -8 }}
-              className="text-center group"
+              className="text-center group cursor-pointer"
+              onClick={() => handleMemberClick(member)}
             >
               <motion.div whileHover={{ scale: 1.05 }} className="relative w-24 h-24 mx-auto mb-4">
                 {/* Glow effect on hover */}
@@ -87,6 +102,13 @@ export function TeamSection({ members }: TeamSectionProps) {
           ))}
         </motion.div>
       </div>
+
+      {/* Team Member Dialog */}
+      <TeamMemberDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        member={selectedMember}
+      />
     </section>
   )
 }
@@ -98,7 +120,11 @@ export const defaultTeamMembers: TeamMember[] = [
     role: 'CEO',
     avatar:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-    description: 'Fondateur et visionnaire de Sarena Store',
+    socialMedia: [
+      { platform: 'linkedin', url: 'https://linkedin.com/in/paul-nguema' },
+      { platform: 'twitter', url: 'https://twitter.com/paulnguema' },
+      { platform: 'email', url: 'mailto:paul@sarenastore.cm' },
+    ],
   },
   {
     id: '2',
@@ -106,7 +132,10 @@ export const defaultTeamMembers: TeamMember[] = [
     role: 'Produits',
     avatar:
       'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop&crop=face',
-    description: 'Responsable de la sélection produits',
+    socialMedia: [
+      { platform: 'instagram', url: 'https://instagram.com/mariengo' },
+      { platform: 'facebook', url: 'https://facebook.com/mariengo' },
+    ],
   },
   {
     id: '3',
@@ -114,7 +143,10 @@ export const defaultTeamMembers: TeamMember[] = [
     role: 'Support',
     avatar:
       'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face',
-    description: 'Service client et assistance',
+    socialMedia: [
+      { platform: 'whatsapp', url: 'https://wa.me/237690000000' },
+      { platform: 'email', url: 'mailto:jean@sarenastore.cm' },
+    ],
   },
   {
     id: '4',
@@ -122,6 +154,6 @@ export const defaultTeamMembers: TeamMember[] = [
     role: 'Livraison',
     avatar:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face',
-    description: 'Coordination des livraisons',
+    // No social media - will show message in dialog
   },
 ]
