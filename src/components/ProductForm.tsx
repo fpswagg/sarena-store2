@@ -7,7 +7,8 @@ import { User, Role } from '@prisma/client'
 import { createProduct, updateProduct } from '@/app/actions/products'
 import { getTranslated } from '@/lib/i18n/context'
 import toast from 'react-hot-toast'
-import Image from 'next/image'
+import { ImageUpload } from '@/components/ImageUpload'
+import { MultiImageUpload } from '@/components/MultiImageUpload'
 
 interface ProductFormProps {
   product?: ProductWithRelations
@@ -29,7 +30,7 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
     stock: product?.stock || 0,
     city: product?.city || '',
     thumbnail: product?.thumbnail || '',
-    images: product?.images.join(',') || '',
+    images: product?.images || [],
     isNew: product?.isNew || false,
     supplierId: product?.supplierId || currentUser.id,
   })
@@ -42,6 +43,9 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'isNew') {
         formDataObj.append(key, value ? 'true' : 'false')
+      } else if (key === 'images') {
+        // Convert array to comma-separated string for FormData
+        formDataObj.append(key, Array.isArray(value) ? value.join(',') : String(value))
       } else {
         formDataObj.append(key, String(value))
       }
@@ -215,43 +219,26 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
 
         {/* Thumbnail */}
         <div className="md:col-span-2">
-          <label className="label">
-            <span className="label-text">Image principale (URL) *</span>
-          </label>
-          <input
-            type="url"
-            className="input input-bordered w-full"
+          <ImageUpload
             value={formData.thumbnail}
-            onChange={e => setFormData({ ...formData, thumbnail: e.target.value })}
+            onChange={(url) => setFormData({ ...formData, thumbnail: url })}
+            label="Image principale"
             required
+            folder="thumbnails"
+            previewSize="lg"
+            allowUrlInput={true}
           />
-          {formData.thumbnail && (
-            <div className="mt-2 w-32 h-32 relative rounded-lg overflow-hidden bg-base-200">
-              <Image
-                src={formData.thumbnail}
-                alt="Preview"
-                fill
-                className="object-cover"
-                sizes="128px"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
-            </div>
-          )}
         </div>
 
         {/* Images */}
         <div className="md:col-span-2">
-          <label className="label">
-            <span className="label-text">Images supplémentaires (URLs séparées par des virgules)</span>
-          </label>
-          <input
-            type="text"
-            className="input input-bordered w-full"
+          <MultiImageUpload
             value={formData.images}
-            onChange={e => setFormData({ ...formData, images: e.target.value })}
-            placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+            onChange={(urls) => setFormData({ ...formData, images: urls })}
+            label="Images supplémentaires"
+            folder="images"
+            maxImages={10}
+            allowUrlInput={true}
           />
         </div>
 

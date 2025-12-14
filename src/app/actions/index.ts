@@ -12,3 +12,4 @@ export {
 export { getLogs, exportLogs } from './logs'
 export { getProducts, getProduct, getDefaultAdmin, getAllAdmins, getProductRelationships } from './products'
 export { getUserBySupabaseId } from './users'
+export { uploadFile, deleteFile } from './upload'
