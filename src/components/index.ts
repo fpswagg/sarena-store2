@@ -19,6 +19,7 @@ export { Footer } from './Footer'
 // Dashboard
 export { DashboardHeader } from './DashboardHeader'
 export { DashboardSidebar } from './DashboardSidebar'
+export { DashboardBreadcrumbs } from './DashboardBreadcrumbs'
 export { StatsCards } from './StatsCards'
 export { ProductTable } from './ProductTable'
 export { ProductForm } from './ProductForm'

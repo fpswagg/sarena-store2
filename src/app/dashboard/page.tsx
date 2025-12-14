@@ -39,7 +39,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-heading font-bold mb-8">Tableau de bord</h1>
+      <h1 className="text-2xl sm:text-3xl font-heading font-bold mb-4 sm:mb-8">Tableau de bord</h1>
 
       <StatsCards
         totalProducts={totalProducts}
@@ -49,8 +49,8 @@ export default async function DashboardPage() {
       />
 
       {user.role === 'ADMIN' && recentLogs.success && (
-        <div>
-          <h2 className="text-2xl font-heading font-bold mb-4">Logs récents</h2>
+        <div className="mt-6 sm:mt-8">
+          <h2 className="text-xl sm:text-2xl font-heading font-bold mb-4">Logs récents</h2>
           <LogsTable logs={recentLogs.logs} />
         </div>
       )}

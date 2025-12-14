@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProductWithRelations } from '@/types'
-import { User } from '@prisma/client'
+import { User, Role } from '@prisma/client'
 import { createProduct, updateProduct } from '@/app/actions/products'
 import { getTranslated } from '@/lib/i18n/context'
 import toast from 'react-hot-toast'
@@ -11,8 +11,8 @@ import Image from 'next/image'
 
 interface ProductFormProps {
   product?: ProductWithRelations
-  suppliers?: User[]
-  currentUser: User
+  suppliers?: Array<{ id: string; fullName: string | null; email: string | null }>
+  currentUser: { id: string; role: Role }
 }
 
 export function ProductForm({ product, suppliers = [], currentUser }: ProductFormProps) {
@@ -281,4 +281,5 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
     </form>
   )
 }
+
 

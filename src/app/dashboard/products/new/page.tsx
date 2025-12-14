@@ -21,9 +21,13 @@ export default async function NewProductPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-heading font-bold mb-8">Nouveau produit</h1>
-      <ProductForm suppliers={suppliers} currentUser={user} />
+      <h1 className="text-2xl sm:text-3xl font-heading font-bold mb-4 sm:mb-8">Nouveau produit</h1>
+      <ProductForm
+        suppliers={suppliers}
+        currentUser={{ id: user.id, role: user.role }}
+      />
     </div>
   )
 }
+
 

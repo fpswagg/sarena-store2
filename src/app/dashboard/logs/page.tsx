@@ -8,9 +8,10 @@ export default async function LogsPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-heading font-bold mb-8">Logs système</h1>
+      <h1 className="text-2xl sm:text-3xl font-heading font-bold mb-4 sm:mb-8">Logs système</h1>
       <LogsTable logs={logs} showDownload />
     </div>
   )
 }
+
 

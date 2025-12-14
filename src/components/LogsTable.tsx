@@ -85,3 +85,4 @@ export function LogsTable({ logs, showDownload = false }: LogsTableProps) {
   )
 }
 
+

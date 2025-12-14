@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { FiEdit, FiTrash2, FiX } from 'react-icons/fi'
 import { ProductWithRelations } from '@/types'
 import { getTranslated } from '@/lib/i18n/context'
+import { Locale } from '@/lib/i18n/translations'
 import { deleteProduct, markProductUnavailable } from '@/app/actions/products'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -14,10 +15,15 @@ interface ProductTableProps {
   products: ProductWithRelations[]
   userRole: string
   currentUserId: string
-  locale?: string
+  locale?: Locale
 }
 
-export function ProductTable({ products, userRole, currentUserId, locale = 'fr' }: ProductTableProps) {
+export function ProductTable({
+  products,
+  userRole,
+  currentUserId,
+  locale = 'fr' as Locale,
+}: ProductTableProps) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -55,17 +61,17 @@ export function ProductTable({ products, userRole, currentUserId, locale = 'fr' 
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table w-full">
+    <div className="overflow-x-auto -mx-3 sm:mx-0">
+      <table className="table w-full text-sm sm:text-base">
         <thead>
           <tr>
-            <th>Image</th>
+            <th className="hidden sm:table-cell">Image</th>
             <th>Nom</th>
-            <th>Ville</th>
+            <th className="hidden md:table-cell">Ville</th>
             <th>Prix</th>
             <th>Stock</th>
-            <th>Note</th>
-            {userRole === 'ADMIN' && <th>Fournisseur</th>}
+            <th className="hidden sm:table-cell">Note</th>
+            {userRole === 'ADMIN' && <th className="hidden lg:table-cell">Fournisseur</th>}
             <th>Actions</th>
           </tr>
         </thead>
@@ -77,8 +83,8 @@ export function ProductTable({ products, userRole, currentUserId, locale = 'fr' 
 
             return (
               <tr key={product.id}>
-                <td>
-                  <div className="w-16 h-16 relative rounded-lg overflow-hidden">
+                <td className="hidden sm:table-cell">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 relative rounded-lg overflow-hidden">
                     <Image
                       src={product.thumbnail}
                       alt={name}
@@ -89,56 +95,61 @@ export function ProductTable({ products, userRole, currentUserId, locale = 'fr' 
                   </div>
                 </td>
                 <td>
-                  <div className="font-semibold">{name}</div>
+                  <div className="font-semibold text-sm sm:text-base">{name}</div>
                   {product.isNew && (
-                    <span className="badge badge-secondary badge-sm">Nouveau</span>
+                    <span className="badge badge-secondary badge-sm mt-1">Nouveau</span>
                   )}
+                  <div className="sm:hidden text-xs text-base-content/60 mt-1">
+                    {product.city} • {product.price.toLocaleString()} FCFA
+                  </div>
                 </td>
-                <td>{product.city}</td>
-                <td>{product.price.toLocaleString()} FCFA</td>
+                <td className="hidden md:table-cell">{product.city}</td>
+                <td className="whitespace-nowrap">{product.price.toLocaleString()} FCFA</td>
                 <td>
                   <span className={product.stock > 0 ? 'text-success' : 'text-error'}>
                     {product.stock}
                   </span>
                 </td>
-                <td>
+                <td className="hidden sm:table-cell">
                   <div className="flex items-center gap-1">
                     <span className="text-warning">★</span>
                     <span>{ratingAvg.toFixed(1)}</span>
-                    <span className="text-sm text-base-content/60">({ratingCount})</span>
+                    <span className="text-xs text-base-content/60">({ratingCount})</span>
                   </div>
                 </td>
                 {userRole === 'ADMIN' && (
-                  <td>{product.supplier.fullName || product.supplier.email}</td>
+                  <td className="hidden lg:table-cell text-sm">
+                    {product.supplier.fullName || product.supplier.email}
+                  </td>
                 )}
                 <td>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     {canEdit(product) && (
                       <Link
                         href={`/dashboard/products/${product.id}`}
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost btn-xs sm:btn-sm"
                         title="Éditer"
                       >
-                        <FiEdit className="w-4 h-4" />
+                        <FiEdit className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Link>
                     )}
                     {product.stock > 0 && canEdit(product) && (
                       <button
                         onClick={() => handleMarkUnavailable(product.id)}
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost btn-xs sm:btn-sm"
                         title="Marquer indisponible"
                       >
-                        <FiX className="w-4 h-4" />
+                        <FiX className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     )}
                     {canDelete(product) && (
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="btn btn-ghost btn-sm text-error"
+                        className="btn btn-ghost btn-xs sm:btn-sm text-error"
                         title="Supprimer"
                         disabled={deletingId === product.id}
                       >
-                        <FiTrash2 className="w-4 h-4" />
+                        <FiTrash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     )}
                   </div>
@@ -156,4 +167,5 @@ export function ProductTable({ products, userRole, currentUserId, locale = 'fr' 
     </div>
   )
 }
+
 

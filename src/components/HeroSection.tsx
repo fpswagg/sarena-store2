@@ -26,9 +26,9 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
   return (
-    <section ref={containerRef} className="relative py-16 sm:py-24 overflow-hidden">
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+    <section ref={containerRef} className="relative py-12 sm:py-24 overflow-hidden">
+      {/* Animated Background Blobs - Hidden on mobile */}
+      <div className="absolute inset-0 -z-10 overflow-hidden hidden sm:block">
         <motion.div
           style={{ y: y1 }}
           className="absolute -top-20 -right-20 w-[500px] h-[500px] blob bg-gradient-to-br from-yellow-400/25 via-amber-400/20 to-orange-400/15"
@@ -59,29 +59,29 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
 
       <motion.div style={{ opacity }} className="max-w-5xl mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto">
-          {/* Badge */}
+          {/* Badge - Simplified on mobile */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-yellow mb-6"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-base-100 border border-base-200 mb-4 sm:mb-6"
           >
-            <FiShield className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">{t.hero.badge}</span>
+            <FiShield className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+            <span className="text-xs sm:text-sm font-medium text-primary">{t.hero.badge}</span>
           </motion.div>
 
-          {/* Title */}
+          {/* Title - Simplified on mobile */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-heading font-extrabold mb-5 tracking-tight leading-[1.1]"
+            className="text-3xl sm:text-5xl md:text-6xl font-heading font-bold sm:font-extrabold mb-4 sm:mb-5 tracking-tight leading-tight sm:leading-[1.1]"
           >
             {t.hero.title}{' '}
             <span className="text-gradient relative">
               {t.hero.titleHighlight}
               <motion.span
-                className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 rounded-full"
+                className="absolute -bottom-1 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 rounded-full hidden sm:block"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
@@ -89,17 +89,17 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - Simplified on mobile */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-base-content/60 mb-8 max-w-lg mx-auto leading-relaxed"
+            className="text-sm sm:text-lg text-base-content/60 mb-6 sm:mb-8 max-w-lg mx-auto leading-relaxed px-2 sm:px-0"
           >
             {t.hero.subtitle}
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons - Simplified on mobile */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,10 +110,10 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
               href="/#produits"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="btn btn-primary btn-lg gap-2 shadow-lg shadow-primary/25 font-heading w-full sm:w-auto"
+              className="btn btn-primary btn-md sm:btn-lg gap-2 shadow-lg shadow-primary/25 font-heading w-full sm:w-auto"
             >
               {t.hero.cta}
-              <FiArrowDown className="w-5 h-5" />
+              <FiArrowDown className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.a>
 
             <motion.a
@@ -124,19 +124,19 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
               animate="animate"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="btn btn-outline btn-lg gap-2 font-heading w-full sm:w-auto"
+              className="btn btn-outline btn-md sm:btn-lg gap-2 font-heading w-full sm:w-auto"
             >
-              <FaWhatsapp className="w-5 h-5" />
+              <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5" />
               {t.hero.whatsapp}
             </motion.a>
           </motion.div>
 
-          {/* Trust indicators */}
+          {/* Trust indicators - Hidden on mobile, shown on desktop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto"
+            className="hidden sm:grid mt-10 grid-cols-3 gap-4 max-w-md mx-auto"
           >
             {[
               { icon: FiShield, text: t.hero.trust1 },
@@ -151,7 +151,7 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
                 className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-base-200/30"
               >
                 <item.icon className="w-5 h-5 text-primary" />
-                <span className="text-[10px] sm:text-xs text-base-content/60 text-center leading-tight">
+                <span className="text-xs text-base-content/60 text-center leading-tight">
                   {item.text}
                 </span>
               </motion.div>
