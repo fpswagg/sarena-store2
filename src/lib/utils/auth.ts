@@ -19,7 +19,7 @@ export async function requireAuth() {
 export async function requireRole(allowedRoles: Role[]) {
   const user = await requireAuth()
   if (!allowedRoles.includes(user.role)) {
-    redirect('/dashboard')
+    redirect('/')
   }
   return user
 }
@@ -58,5 +58,6 @@ export function isAdmin(userRole: Role): boolean {
 export function isSupplier(userRole: Role): boolean {
   return userRole === Role.SUPPLIER
 }
+
 
 
