@@ -159,11 +159,6 @@ export function ProductTable({
           })}
         </tbody>
       </table>
-      {products.length === 0 && (
-        <div className="text-center py-12 text-base-content/60">
-          Aucun produit trouvé
-        </div>
-      )}
     </div>
   )
 }

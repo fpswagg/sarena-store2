@@ -88,16 +88,14 @@ export async function submitComplaint(message: string, productId?: string, admin
     }
 
     // Log the complaint
-    await prisma.log.create({
-      data: {
-        userId: session.id,
-        userRole: session.role,
-        action: 'COMPLAINT',
-        target: productId ? 'Product' : 'General',
-        targetId: productId || null,
-        ip,
-      },
-    })
+    await createLog(
+      session.id,
+      session.role,
+      'COMPLAINT',
+      productId ? 'Product' : 'General',
+      productId || undefined,
+      ip
+    )
 
     revalidatePath('/')
     return { success: true, complaintId: complaint.id }
@@ -213,6 +211,86 @@ export async function updateComplaintStatus(
     return { success: true }
   } catch (error) {
     console.error('Error updating complaint status:', error)
+    return { success: false, error: 'Erreur lors de la mise à jour.' }
+  }
+}
+
+// Delete complaint (Admin only)
+export async function deleteComplaint(complaintId: string) {
+  try {
+    const { user: session } = await getSession()
+    if (!session?.id || session.role !== 'ADMIN') {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    // Get complaint to check if it has a product
+    const complaint = await prisma.complaint.findUnique({
+      where: { id: complaintId },
+      select: { productId: true },
+    })
+
+    if (!complaint) {
+      return { success: false, error: 'Plainte introuvable.' }
+    }
+
+    // Delete complaint
+    await prisma.complaint.delete({
+      where: { id: complaintId },
+    })
+
+    // Update product stats if complaint was about a product
+    if (complaint.productId) {
+      await prisma.productStat.updateMany({
+        where: { productId: complaint.productId },
+        data: {
+          complaints: { decrement: 1 },
+        },
+      })
+    }
+
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+
+    // Log the deletion
+    await createLog(session.id, session.role, 'DELETE', 'Complaint', complaintId, ip)
+
+    revalidatePath('/dashboard/complaints')
+    return { success: true }
+  } catch (error) {
+    console.error('Error deleting complaint:', error)
+    return { success: false, error: 'Erreur lors de la suppression.' }
+  }
+}
+
+// Update complaint message (Admin only)
+export async function updateComplaintMessage(complaintId: string, message: string) {
+  try {
+    const { user: session } = await getSession()
+    if (!session?.id || session.role !== 'ADMIN') {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    // Validate message
+    if (!message || message.trim().length < 10) {
+      return { success: false, error: 'Le message doit contenir au moins 10 caractères.' }
+    }
+
+    // Update complaint
+    await prisma.complaint.update({
+      where: { id: complaintId },
+      data: { message: message.trim() },
+    })
+
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+
+    // Log the update
+    await createLog(session.id, session.role, 'UPDATE', 'Complaint', complaintId, ip)
+
+    revalidatePath('/dashboard/complaints')
+    return { success: true }
+  } catch (error) {
+    console.error('Error updating complaint message:', error)
     return { success: false, error: 'Erreur lors de la mise à jour.' }
   }
 }

@@ -239,6 +239,12 @@ export async function updateProduct(id: string, formData: FormData) {
     if (!nameFr || !nameEn || !city || !thumbnail) {
       return { success: false, error: 'Tous les champs requis doivent être remplis' }
     }
+    if (price <= 0) {
+      return { success: false, error: 'Le prix doit être supérieur à 0' }
+    }
+    if (stock < 0) {
+      return { success: false, error: 'Le stock ne peut pas être négatif' }
+    }
 
     // Update product
     await prisma.product.update({

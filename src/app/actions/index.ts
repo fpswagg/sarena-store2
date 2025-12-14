@@ -6,6 +6,8 @@ export {
   getComplaints,
   reassignComplaint,
   updateComplaintStatus,
+  deleteComplaint,
+  updateComplaintMessage,
 } from './complaints'
 export { getLogs, exportLogs } from './logs'
 export { getProducts, getProduct, getDefaultAdmin, getAllAdmins } from './products'

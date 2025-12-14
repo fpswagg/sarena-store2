@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { FiEdit } from 'react-icons/fi'
-import { updateComplaintStatus, reassignComplaint } from '@/app/actions/complaints'
+import { FiEdit, FiTrash2, FiMessageSquare } from 'react-icons/fi'
+import { updateComplaintStatus, reassignComplaint, deleteComplaint, updateComplaintMessage } from '@/app/actions/complaints'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { getTranslated } from '@/lib/i18n/context'
@@ -37,6 +37,9 @@ interface ComplaintsTableProps {
 export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
   const router = useRouter()
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editMessage, setEditMessage] = useState<string>('')
 
   const handleStatusChange = async (id: string, status: 'RECEIVED' | 'IN_PROGRESS' | 'RESOLVED') => {
     setUpdatingId(id)
@@ -59,6 +62,51 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
     } else {
       toast.error(result.error || 'Erreur')
     }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette plainte ?')) return
+
+    setDeletingId(id)
+    const result = await deleteComplaint(id)
+    setDeletingId(null)
+
+    if (result.success) {
+      toast.success('Plainte supprimée')
+      router.refresh()
+    } else {
+      toast.error(result.error || 'Erreur')
+    }
+  }
+
+  const handleEditMessage = async (id: string) => {
+    const complaint = complaints.find(c => c.id === id)
+    if (!complaint) return
+
+    setEditingId(id)
+    setEditMessage(complaint.message)
+  }
+
+  const handleSaveMessage = async (id: string) => {
+    if (!editMessage.trim() || editMessage.trim().length < 10) {
+      toast.error('Le message doit contenir au moins 10 caractères')
+      return
+    }
+
+    const result = await updateComplaintMessage(id, editMessage)
+    if (result.success) {
+      toast.success('Message mis à jour')
+      setEditingId(null)
+      setEditMessage('')
+      router.refresh()
+    } else {
+      toast.error(result.error || 'Erreur')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingId(null)
+    setEditMessage('')
   }
 
   const getStatusBadge = (status: string) => {
@@ -98,7 +146,32 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
                 </div>
               </td>
               <td className="hidden md:table-cell">
-                <div className="max-w-md truncate">{complaint.message}</div>
+                {editingId === complaint.id ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      className="textarea textarea-bordered textarea-sm w-full"
+                      value={editMessage}
+                      onChange={e => setEditMessage(e.target.value)}
+                      rows={3}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveMessage(complaint.id)}
+                        className="btn btn-primary btn-xs"
+                      >
+                        Enregistrer
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="btn btn-ghost btn-xs"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-w-md truncate">{complaint.message}</div>
+                )}
               </td>
               <td className="hidden lg:table-cell">
                 {complaint.product ? (
@@ -145,9 +218,24 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
               </td>
               <td className="hidden md:table-cell">{new Date(complaint.createdAt).toLocaleDateString('fr-FR')}</td>
               <td>
-                <button className="btn btn-ghost btn-xs sm:btn-sm" title="Voir détails">
-                  <FiEdit className="w-3 h-3 sm:w-4 sm:h-4" />
-                </button>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <button
+                    onClick={() => handleEditMessage(complaint.id)}
+                    className="btn btn-ghost btn-xs sm:btn-sm"
+                    title="Éditer le message"
+                    disabled={editingId === complaint.id || deletingId === complaint.id}
+                  >
+                    <FiMessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(complaint.id)}
+                    className="btn btn-ghost btn-xs sm:btn-sm text-error"
+                    title="Supprimer"
+                    disabled={editingId === complaint.id || deletingId === complaint.id}
+                  >
+                    <FiTrash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
