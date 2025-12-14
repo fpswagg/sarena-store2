@@ -132,6 +132,17 @@ const fr = {
     submit: 'Envoyer',
     close: 'Fermer',
   },
+
+  notFound: {
+    title: 'Produit introuvable',
+    description: 'Désolé, le produit que vous recherchez n\'existe pas ou a été supprimé.',
+    backHome: 'Retour à l\'accueil',
+    viewAll: 'Voir tous les produits',
+    suggestions: 'Suggestions :',
+    suggestion1: 'Vérifiez que l\'URL est correcte',
+    suggestion2: 'Le produit a peut-être été supprimé ou déplacé',
+    suggestion3: 'Essayez de rechercher le produit depuis la page d\'accueil',
+  },
 }
 
 const en: typeof fr = {
@@ -265,6 +276,17 @@ const en: typeof fr = {
     cancel: 'Cancel',
     submit: 'Submit',
     close: 'Close',
+  },
+
+  notFound: {
+    title: 'Product Not Found',
+    description: 'Sorry, the product you are looking for does not exist or has been removed.',
+    backHome: 'Back to Home',
+    viewAll: 'View All Products',
+    suggestions: 'Suggestions:',
+    suggestion1: 'Check that the URL is correct',
+    suggestion2: 'The product may have been deleted or moved',
+    suggestion3: 'Try searching for the product from the home page',
   },
 }
 
