@@ -8,14 +8,25 @@ export const dynamic = 'force-dynamic'
 // Generate metadata
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const { product } = await getProduct(id)
-
-  if (!product) {
+  
+  // Validate ID format
+  if (!id || typeof id !== 'string' || !/^[a-f0-9-]{36}$/i.test(id)) {
     return {
       title: 'Produit non trouvé | Boutique Sarena',
       description: 'Le produit demandé est introuvable.',
     }
   }
+
+  const productResult = await getProduct(id)
+  
+  if (!productResult.success || !productResult.product) {
+    return {
+      title: 'Produit non trouvé | Boutique Sarena',
+      description: 'Le produit demandé est introuvable.',
+    }
+  }
+
+  const product = productResult.product
 
   // Get translated name and description
   const nameObj = product.name as { fr?: string; en?: string } | string
@@ -56,13 +67,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  
+  // Validate ID format (should be UUID)
+  if (!id || typeof id !== 'string' || !/^[a-f0-9-]{36}$/i.test(id)) {
+    notFound()
+  }
+
   const [productResult, adminResult, productsResult] = await Promise.all([
     getProduct(id),
     getDefaultAdmin(),
     getProducts(),
   ])
 
-  if (!productResult.product) {
+  // Check if product exists and is accessible
+  if (!productResult.success || !productResult.product) {
     notFound()
   }
 

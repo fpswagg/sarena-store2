@@ -35,8 +35,13 @@ export async function getProducts(): Promise<{
 // Get a single product by ID
 export async function getProduct(
   id: string
-): Promise<{ success: boolean; product?: ProductWithRelations }> {
+): Promise<{ success: boolean; product?: ProductWithRelations; error?: string }> {
   try {
+    // Validate ID format (should be UUID)
+    if (!id || typeof id !== 'string' || !/^[a-f0-9-]{36}$/i.test(id)) {
+      return { success: false, error: 'Invalid product ID format' }
+    }
+
     const product = await prisma.product.findUnique({
       where: { id },
       include: {
@@ -49,13 +54,17 @@ export async function getProduct(
     })
 
     if (!product) {
-      return { success: false }
+      return { success: false, error: 'Product not found' }
     }
 
     return { success: true, product }
   } catch (error) {
     console.error('Error fetching product:', error)
-    return { success: false }
+    // Check if it's a Prisma validation error
+    if (error instanceof Error && error.message.includes('Invalid')) {
+      return { success: false, error: 'Invalid product ID' }
+    }
+    return { success: false, error: 'Failed to fetch product' }
   }
 }
 

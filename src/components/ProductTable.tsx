@@ -10,6 +10,7 @@ import { Locale } from '@/lib/i18n/translations'
 import { deleteProduct, markProductUnavailable, getProductRelationships } from '@/app/actions/products'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { DeleteProductDialog } from '@/components/DeleteProductDialog'
 
 interface ProductTableProps {
   products: ProductWithRelations[]
@@ -26,48 +27,47 @@ export function ProductTable({
 }: ProductTableProps) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [productToDelete, setProductToDelete] = useState<{
+    id: string
+    name: string
+    relationships: { ratingsCount: number; complaintsCount: number; interactionsCount: number; hasStats: boolean } | null
+  } | null>(null)
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteClick = async (id: string) => {
+    const product = products.find(p => p.id === id)
+    if (!product) return
+
     // Get relationships to show warning
     const relationshipsResult = await getProductRelationships(id)
     const relationships = relationshipsResult.success ? relationshipsResult.relationships : null
 
-    // Build warning message
-    let warningMessage = 'Êtes-vous sûr de vouloir supprimer ce produit ?\n\n'
-    
-    if (relationships) {
-      const warnings: string[] = []
-      if (relationships.ratingsCount > 0) {
-        warnings.push(`• ${relationships.ratingsCount} avis seront supprimés`)
-      }
-      if (relationships.complaintsCount > 0) {
-        warnings.push(`• ${relationships.complaintsCount} plainte(s) seront dissociées du produit`)
-      }
-      if (relationships.interactionsCount > 0) {
-        warnings.push(`• ${relationships.interactionsCount} interaction(s) seront supprimées`)
-      }
-      if (relationships.hasStats) {
-        warnings.push('• Les statistiques du produit seront supprimées')
-      }
+    const productName = getTranslated(product.name as Record<string, string>, locale)
 
-      if (warnings.length > 0) {
-        warningMessage += 'Cette action supprimera également :\n' + warnings.join('\n') + '\n\n'
-      }
-    }
+    setProductToDelete({
+      id,
+      name: productName,
+      relationships,
+    })
+    setDeleteDialogOpen(true)
+  }
 
-    warningMessage += 'Cette action est irréversible.'
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return
 
-    if (!confirm(warningMessage)) return
-
-    setDeletingId(id)
-    const result = await deleteProduct(id)
+    setDeletingId(productToDelete.id)
+    const result = await deleteProduct(productToDelete.id)
     setDeletingId(null)
 
     if (result.success) {
       toast.success('Produit supprimé avec succès')
+      setDeleteDialogOpen(false)
+      setProductToDelete(null)
       router.refresh()
     } else {
       toast.error(result.error || 'Erreur lors de la suppression')
+      setDeleteDialogOpen(false)
+      setProductToDelete(null)
     }
   }
 
@@ -173,10 +173,10 @@ export function ProductTable({
                     )}
                     {canDelete(product) && (
                       <button
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDeleteClick(product.id)}
                         className="btn btn-ghost btn-xs sm:btn-sm text-error"
                         title="Supprimer"
-                        disabled={deletingId === product.id}
+                        disabled={deletingId === product.id || deleteDialogOpen}
                       >
                         <FiTrash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
@@ -188,6 +188,21 @@ export function ProductTable({
           })}
         </tbody>
       </table>
+
+      {/* Delete Confirmation Dialog */}
+      {productToDelete && (
+        <DeleteProductDialog
+          isOpen={deleteDialogOpen}
+          onClose={() => {
+            setDeleteDialogOpen(false)
+            setProductToDelete(null)
+          }}
+          productName={productToDelete.name}
+          relationships={productToDelete.relationships}
+          onConfirm={handleConfirmDelete}
+          isDeleting={deletingId === productToDelete.id}
+        />
+      )}
     </div>
   )
 }
