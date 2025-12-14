@@ -1,7 +1,12 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { ProductWithRelations } from '@/types'
+import { getSession } from '@/lib/auth'
+import { createLog, getClientIp } from '@/lib/utils/logs'
+import { Role } from '@prisma/client'
 
 // Get all products with relations
 export async function getProducts(): Promise<{
@@ -101,5 +106,221 @@ export async function getAllAdmins(): Promise<{
   } catch (error) {
     console.error('Error fetching admins:', error)
     return { success: false, admins: [] }
+  }
+}
+
+// Create product (for dashboard)
+export async function createProduct(formData: FormData) {
+  try {
+    const { user } = await getSession()
+    if (!user) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    // Check permissions
+    if (user.role !== Role.ADMIN && user.role !== Role.SUPPLIER) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    const nameFr = formData.get('nameFr') as string
+    const nameEn = formData.get('nameEn') as string
+    const shortDescFr = formData.get('shortDescFr') as string
+    const shortDescEn = formData.get('shortDescEn') as string
+    const longDescFr = formData.get('longDescFr') as string
+    const longDescEn = formData.get('longDescEn') as string
+    const price = parseFloat(formData.get('price') as string)
+    const stock = parseInt(formData.get('stock') as string)
+    const city = formData.get('city') as string
+    const thumbnail = formData.get('thumbnail') as string
+    const images = (formData.get('images') as string)?.split(',').filter(Boolean) || []
+    const isNew = formData.get('isNew') === 'true'
+    const supplierId = formData.get('supplierId') as string || user.id
+
+    // Validate
+    if (!nameFr || !nameEn || !price || !stock || !city || !thumbnail) {
+      return { success: false, error: 'Tous les champs requis doivent être remplis' }
+    }
+
+    // Supplier can only create products for themselves
+    if (user.role === Role.SUPPLIER && supplierId !== user.id) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    // Create product
+    const product = await prisma.product.create({
+      data: {
+        name: { fr: nameFr, en: nameEn },
+        shortDesc: { fr: shortDescFr, en: shortDescEn },
+        longDesc: { fr: longDescFr, en: longDescEn },
+        price,
+        stock,
+        city,
+        thumbnail,
+        images,
+        isNew,
+        supplierId,
+      },
+    })
+
+    // Create stats
+    await prisma.productStat.create({
+      data: {
+        productId: product.id,
+        views: 0,
+        clicks: 0,
+        complaints: 0,
+        ratingAvg: 0,
+      },
+    })
+
+    // Log
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+    await createLog(user.id, user.role, 'CREATE', 'Product', product.id, ip)
+
+    revalidatePath('/dashboard/products')
+    return { success: true, productId: product.id }
+  } catch (error) {
+    console.error('Error creating product:', error)
+    return { success: false, error: 'Erreur lors de la création du produit' }
+  }
+}
+
+// Update product
+export async function updateProduct(id: string, formData: FormData) {
+  try {
+    const { user } = await getSession()
+    if (!user) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    // Get existing product
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    })
+
+    if (!existingProduct) {
+      return { success: false, error: 'Produit introuvable' }
+    }
+
+    // Check permissions
+    if (user.role === Role.SUPPLIER && existingProduct.supplierId !== user.id) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    if (user.role !== Role.ADMIN && user.role !== Role.SUPPLIER) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    const nameFr = formData.get('nameFr') as string
+    const nameEn = formData.get('nameEn') as string
+    const shortDescFr = formData.get('shortDescFr') as string
+    const shortDescEn = formData.get('shortDescEn') as string
+    const longDescFr = formData.get('longDescFr') as string
+    const longDescEn = formData.get('longDescEn') as string
+    const price = parseFloat(formData.get('price') as string)
+    const stock = parseInt(formData.get('stock') as string)
+    const city = formData.get('city') as string
+    const thumbnail = formData.get('thumbnail') as string
+    const images = (formData.get('images') as string)?.split(',').filter(Boolean) || []
+    const isNew = formData.get('isNew') === 'true'
+    const supplierId = formData.get('supplierId') as string || existingProduct.supplierId
+
+    // Update product
+    await prisma.product.update({
+      where: { id },
+      data: {
+        name: { fr: nameFr, en: nameEn },
+        shortDesc: { fr: shortDescFr, en: shortDescEn },
+        longDesc: { fr: longDescFr, en: longDescEn },
+        price,
+        stock,
+        city,
+        thumbnail,
+        images,
+        isNew,
+        supplierId: user.role === Role.ADMIN ? supplierId : existingProduct.supplierId,
+      },
+    })
+
+    // Log
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+    await createLog(user.id, user.role, 'UPDATE', 'Product', id, ip)
+
+    revalidatePath('/dashboard/products')
+    revalidatePath(`/dashboard/products/${id}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Error updating product:', error)
+    return { success: false, error: 'Erreur lors de la mise à jour du produit' }
+  }
+}
+
+// Delete product (Admin only)
+export async function deleteProduct(id: string) {
+  try {
+    const { user } = await getSession()
+    if (!user || user.role !== Role.ADMIN) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    await prisma.product.delete({
+      where: { id },
+    })
+
+    // Log
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+    await createLog(user.id, user.role, 'DELETE', 'Product', id, ip)
+
+    revalidatePath('/dashboard/products')
+    return { success: true }
+  } catch (error) {
+    console.error('Error deleting product:', error)
+    return { success: false, error: 'Erreur lors de la suppression du produit' }
+  }
+}
+
+// Mark product as unavailable (set stock to 0)
+export async function markProductUnavailable(id: string) {
+  try {
+    const { user } = await getSession()
+    if (!user) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    })
+
+    if (!product) {
+      return { success: false, error: 'Produit introuvable' }
+    }
+
+    // Check permissions
+    if (user.role === Role.SUPPLIER && product.supplierId !== user.id) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    if (user.role !== Role.ADMIN && user.role !== Role.SUPPLIER) {
+      return { success: false, error: 'Non autorisé' }
+    }
+
+    await prisma.product.update({
+      where: { id },
+      data: { stock: 0 },
+    })
+
+    // Log
+    const headersList = await headers()
+    const ip = getClientIp(headersList)
+    await createLog(user.id, user.role, 'UPDATE', 'Product', id, ip)
+
+    revalidatePath('/dashboard/products')
+    return { success: true }
+  } catch (error) {
+    console.error('Error marking product unavailable:', error)
+    return { success: false, error: 'Erreur lors de la mise à jour' }
   }
 }

@@ -1,0 +1,162 @@
+'use client'
+
+import { useState } from 'react'
+import { FiEdit } from 'react-icons/fi'
+import { updateComplaintStatus, reassignComplaint } from '@/app/actions/complaints'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { getTranslated } from '@/lib/i18n/context'
+
+type Complaint = {
+  id: string
+  message: string
+  status: 'RECEIVED' | 'IN_PROGRESS' | 'RESOLVED'
+  createdAt: Date
+  user: {
+    id: string
+    fullName: string | null
+    email: string | null
+    avatar: string | null
+  } | null
+  product: {
+    id: string
+    name: Record<string, string> | string
+    thumbnail: string
+  } | null
+  assignedAdmin: {
+    id: string
+    fullName: string | null
+  }
+}
+
+interface ComplaintsTableProps {
+  complaints: Complaint[]
+  admins: Array<{ id: string; fullName: string | null; avatar: string | null }>
+}
+
+export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
+  const router = useRouter()
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+
+  const handleStatusChange = async (id: string, status: 'RECEIVED' | 'IN_PROGRESS' | 'RESOLVED') => {
+    setUpdatingId(id)
+    const result = await updateComplaintStatus(id, status)
+    setUpdatingId(null)
+
+    if (result.success) {
+      toast.success('Statut mis à jour')
+      router.refresh()
+    } else {
+      toast.error(result.error || 'Erreur')
+    }
+  }
+
+  const handleReassign = async (id: string, adminId: string) => {
+    const result = await reassignComplaint(id, adminId)
+    if (result.success) {
+      toast.success('Plainte réassignée')
+      router.refresh()
+    } else {
+      toast.error(result.error || 'Erreur')
+    }
+  }
+
+  const getStatusBadge = (status: string) => {
+    const badges = {
+      RECEIVED: 'badge-warning',
+      IN_PROGRESS: 'badge-info',
+      RESOLVED: 'badge-success',
+    }
+    return badges[status as keyof typeof badges] || 'badge-neutral'
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="table w-full">
+        <thead>
+          <tr>
+            <th>Utilisateur</th>
+            <th>Message</th>
+            <th>Produit</th>
+            <th>Statut</th>
+            <th>Admin assigné</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {complaints.map(complaint => (
+            <tr key={complaint.id}>
+              <td>
+                <div>
+                  <div className="font-semibold">
+                    {complaint.user?.fullName || complaint.user?.email || 'Anonyme'}
+                  </div>
+                  {complaint.user?.email && (
+                    <div className="text-sm text-base-content/60">{complaint.user.email}</div>
+                  )}
+                </div>
+              </td>
+              <td>
+                <div className="max-w-md truncate">{complaint.message}</div>
+              </td>
+              <td>
+                {complaint.product ? (
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm">
+                      {typeof complaint.product.name === 'string'
+                        ? complaint.product.name
+                        : getTranslated(complaint.product.name, 'fr')}
+                    </div>
+                  </div>
+                ) : (
+                  <span className="text-base-content/60">Général</span>
+                )}
+              </td>
+              <td>
+                <select
+                  value={complaint.status}
+                  onChange={e =>
+                    handleStatusChange(
+                      complaint.id,
+                      e.target.value as 'RECEIVED' | 'IN_PROGRESS' | 'RESOLVED'
+                    )
+                  }
+                  className={`select select-sm ${getStatusBadge(complaint.status)}`}
+                  disabled={updatingId === complaint.id}
+                >
+                  <option value="RECEIVED">Reçue</option>
+                  <option value="IN_PROGRESS">En cours</option>
+                  <option value="RESOLVED">Résolue</option>
+                </select>
+              </td>
+              <td>
+                <select
+                  value={complaint.assignedAdmin.id}
+                  onChange={e => handleReassign(complaint.id, e.target.value)}
+                  className="select select-sm"
+                >
+                  {admins.map(admin => (
+                    <option key={admin.id} value={admin.id}>
+                      {admin.fullName || 'Admin'}
+                    </option>
+                  ))}
+                </select>
+              </td>
+              <td>{new Date(complaint.createdAt).toLocaleDateString('fr-FR')}</td>
+              <td>
+                <button className="btn btn-ghost btn-sm" title="Voir détails">
+                  <FiEdit className="w-4 h-4" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {complaints.length === 0 && (
+        <div className="text-center py-12 text-base-content/60">Aucune plainte</div>
+      )}
+    </div>
+  )
+}
+
