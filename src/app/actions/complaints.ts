@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { createLog, getClientIp } from '@/lib/utils/logs'
 
 // Submit a complaint (with or without product, user can choose admin)
 export async function submitComplaint(message: string, productId?: string, adminId?: string) {
@@ -56,7 +57,7 @@ export async function submitComplaint(message: string, productId?: string, admin
     }
 
     const headersList = await headers()
-    const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || null
+    const ip = getClientIp(headersList)
 
     // Create complaint
     const complaint = await prisma.complaint.create({
@@ -173,21 +174,12 @@ export async function reassignComplaint(complaintId: string, newAdminId: string)
     })
 
     const headersList = await headers()
-    const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || null
+    const ip = getClientIp(headersList)
 
     // Log the reassignment
-    await prisma.log.create({
-      data: {
-        userId: session.id,
-        userRole: session.role,
-        action: 'REASSIGN',
-        target: 'Complaint',
-        targetId: complaintId,
-        ip,
-      },
-    })
+    await createLog(session.id, session.role, 'REASSIGN', 'Complaint', complaintId, ip)
 
-    revalidatePath('/')
+    revalidatePath('/dashboard/complaints')
     return { success: true }
   } catch (error) {
     console.error('Error reassigning complaint:', error)
@@ -212,21 +204,12 @@ export async function updateComplaintStatus(
     })
 
     const headersList = await headers()
-    const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || null
+    const ip = getClientIp(headersList)
 
     // Log the status update
-    await prisma.log.create({
-      data: {
-        userId: session.id,
-        userRole: session.role,
-        action: 'UPDATE_STATUS',
-        target: 'Complaint',
-        targetId: complaintId,
-        ip,
-      },
-    })
+    await createLog(session.id, session.role, 'UPDATE_STATUS', 'Complaint', complaintId, ip)
 
-    revalidatePath('/')
+    revalidatePath('/dashboard/complaints')
     return { success: true }
   } catch (error) {
     console.error('Error updating complaint status:', error)

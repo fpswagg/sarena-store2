@@ -40,7 +40,11 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
 
     const formDataObj = new FormData()
     Object.entries(formData).forEach(([key, value]) => {
-      formDataObj.append(key, String(value))
+      if (key === 'isNew') {
+        formDataObj.append(key, value ? 'true' : 'false')
+      } else {
+        formDataObj.append(key, String(value))
+      }
     })
 
     const result = product
@@ -222,13 +226,16 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
             required
           />
           {formData.thumbnail && (
-            <div className="mt-2 w-32 h-32 relative rounded-lg overflow-hidden">
+            <div className="mt-2 w-32 h-32 relative rounded-lg overflow-hidden bg-base-200">
               <Image
                 src={formData.thumbnail}
                 alt="Preview"
                 fill
                 className="object-cover"
                 sizes="128px"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
               />
             </div>
           )}

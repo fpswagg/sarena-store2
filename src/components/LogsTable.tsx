@@ -40,39 +40,40 @@ export function LogsTable({ logs, showDownload = false }: LogsTableProps) {
         <div className="mb-4 flex justify-end">
           <button onClick={handleDownload} className="btn btn-primary btn-sm gap-2">
             <FiDownload className="w-4 h-4" />
-            Télécharger CSV
+            <span className="hidden sm:inline">Télécharger CSV</span>
+            <span className="sm:hidden">CSV</span>
           </button>
         </div>
       )}
-      <div className="overflow-x-auto">
-        <table className="table w-full">
+      <div className="overflow-x-auto -mx-3 sm:mx-0">
+        <table className="table w-full text-sm sm:text-base">
           <thead>
             <tr>
               <th>Date</th>
               <th>Utilisateur</th>
-              <th>Rôle</th>
+              <th className="hidden sm:table-cell">Rôle</th>
               <th>Action</th>
-              <th>Cible</th>
-              <th>ID Cible</th>
-              <th>IP</th>
+              <th className="hidden md:table-cell">Cible</th>
+              <th className="hidden lg:table-cell">ID Cible</th>
+              <th className="hidden lg:table-cell">IP</th>
             </tr>
           </thead>
           <tbody>
             {logs.map(log => (
               <tr key={log.id}>
-                <td>{new Date(log.createdAt).toLocaleString('fr-FR')}</td>
-                <td>{log.userName || 'Anonyme'}</td>
-                <td>
-                  <span className="badge badge-sm">{log.userRole}</span>
+                <td className="whitespace-nowrap">{new Date(log.createdAt).toLocaleString('fr-FR')}</td>
+                <td className="text-sm sm:text-base">{log.userName || 'Anonyme'}</td>
+                <td className="hidden sm:table-cell">
+                  <span className="badge badge-xs sm:badge-sm">{log.userRole}</span>
                 </td>
                 <td>
-                  <span className={`badge badge-sm ${getActionBadge(log.action)}`}>
+                  <span className={`badge badge-xs sm:badge-sm ${getActionBadge(log.action)}`}>
                     {log.action}
                   </span>
                 </td>
-                <td>{log.target}</td>
-                <td className="font-mono text-xs">{log.targetId || '-'}</td>
-                <td className="font-mono text-xs">{log.ip || '-'}</td>
+                <td className="hidden md:table-cell">{log.target}</td>
+                <td className="hidden lg:table-cell font-mono text-xs">{log.targetId || '-'}</td>
+                <td className="hidden lg:table-cell font-mono text-xs">{log.ip || '-'}</td>
               </tr>
             ))}
           </tbody>

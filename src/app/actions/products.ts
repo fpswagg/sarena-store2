@@ -128,17 +128,24 @@ export async function createProduct(formData: FormData) {
     const shortDescEn = formData.get('shortDescEn') as string
     const longDescFr = formData.get('longDescFr') as string
     const longDescEn = formData.get('longDescEn') as string
-    const price = parseFloat(formData.get('price') as string)
-    const stock = parseInt(formData.get('stock') as string)
+    const price = parseFloat(formData.get('price') as string) || 0
+    const stock = parseInt(formData.get('stock') as string) || 0
     const city = formData.get('city') as string
     const thumbnail = formData.get('thumbnail') as string
     const images = (formData.get('images') as string)?.split(',').filter(Boolean) || []
-    const isNew = formData.get('isNew') === 'true'
+    const isNewValue = formData.get('isNew')
+    const isNew = isNewValue === 'true' || isNewValue === 'on'
     const supplierId = formData.get('supplierId') as string || user.id
 
     // Validate
-    if (!nameFr || !nameEn || !price || !stock || !city || !thumbnail) {
+    if (!nameFr || !nameEn || !city || !thumbnail) {
       return { success: false, error: 'Tous les champs requis doivent être remplis' }
+    }
+    if (price <= 0) {
+      return { success: false, error: 'Le prix doit être supérieur à 0' }
+    }
+    if (stock < 0) {
+      return { success: false, error: 'Le stock ne peut pas être négatif' }
     }
 
     // Supplier can only create products for themselves
@@ -179,6 +186,7 @@ export async function createProduct(formData: FormData) {
     await createLog(user.id, user.role, 'CREATE', 'Product', product.id, ip)
 
     revalidatePath('/dashboard/products')
+    revalidatePath('/dashboard')
     return { success: true, productId: product.id }
   } catch (error) {
     console.error('Error creating product:', error)
@@ -218,13 +226,19 @@ export async function updateProduct(id: string, formData: FormData) {
     const shortDescEn = formData.get('shortDescEn') as string
     const longDescFr = formData.get('longDescFr') as string
     const longDescEn = formData.get('longDescEn') as string
-    const price = parseFloat(formData.get('price') as string)
-    const stock = parseInt(formData.get('stock') as string)
+    const price = parseFloat(formData.get('price') as string) || 0
+    const stock = parseInt(formData.get('stock') as string) || 0
     const city = formData.get('city') as string
     const thumbnail = formData.get('thumbnail') as string
     const images = (formData.get('images') as string)?.split(',').filter(Boolean) || []
-    const isNew = formData.get('isNew') === 'true'
+    const isNewValue = formData.get('isNew')
+    const isNew = isNewValue === 'true' || isNewValue === 'on'
     const supplierId = formData.get('supplierId') as string || existingProduct.supplierId
+
+    // Validate
+    if (!nameFr || !nameEn || !city || !thumbnail) {
+      return { success: false, error: 'Tous les champs requis doivent être remplis' }
+    }
 
     // Update product
     await prisma.product.update({
@@ -250,6 +264,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
     revalidatePath('/dashboard/products')
     revalidatePath(`/dashboard/products/${id}`)
+    revalidatePath('/dashboard')
     return { success: true }
   } catch (error) {
     console.error('Error updating product:', error)
@@ -275,6 +290,7 @@ export async function deleteProduct(id: string) {
     await createLog(user.id, user.role, 'DELETE', 'Product', id, ip)
 
     revalidatePath('/dashboard/products')
+    revalidatePath('/dashboard')
     return { success: true }
   } catch (error) {
     console.error('Error deleting product:', error)
@@ -318,6 +334,7 @@ export async function markProductUnavailable(id: string) {
     await createLog(user.id, user.role, 'UPDATE', 'Product', id, ip)
 
     revalidatePath('/dashboard/products')
+    revalidatePath('/dashboard')
     return { success: true }
   } catch (error) {
     console.error('Error marking product unavailable:', error)

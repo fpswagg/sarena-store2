@@ -71,16 +71,16 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table w-full">
+    <div className="overflow-x-auto -mx-3 sm:mx-0">
+      <table className="table w-full text-sm sm:text-base">
         <thead>
           <tr>
             <th>Utilisateur</th>
-            <th>Message</th>
-            <th>Produit</th>
+            <th className="hidden md:table-cell">Message</th>
+            <th className="hidden lg:table-cell">Produit</th>
             <th>Statut</th>
-            <th>Admin assigné</th>
-            <th>Date</th>
+            <th className="hidden sm:table-cell">Admin assigné</th>
+            <th className="hidden md:table-cell">Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -89,18 +89,18 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
             <tr key={complaint.id}>
               <td>
                 <div>
-                  <div className="font-semibold">
+                  <div className="font-semibold text-sm sm:text-base">
                     {complaint.user?.fullName || complaint.user?.email || 'Anonyme'}
                   </div>
                   {complaint.user?.email && (
-                    <div className="text-sm text-base-content/60">{complaint.user.email}</div>
+                    <div className="text-xs sm:text-sm text-base-content/60 hidden sm:block">{complaint.user.email}</div>
                   )}
                 </div>
               </td>
-              <td>
+              <td className="hidden md:table-cell">
                 <div className="max-w-md truncate">{complaint.message}</div>
               </td>
-              <td>
+              <td className="hidden lg:table-cell">
                 {complaint.product ? (
                   <div className="flex items-center gap-2">
                     <div className="text-sm">
@@ -122,7 +122,7 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
                       e.target.value as 'RECEIVED' | 'IN_PROGRESS' | 'RESOLVED'
                     )
                   }
-                  className={`select select-sm ${getStatusBadge(complaint.status)}`}
+                  className={`select select-xs sm:select-sm ${getStatusBadge(complaint.status)}`}
                   disabled={updatingId === complaint.id}
                 >
                   <option value="RECEIVED">Reçue</option>
@@ -130,11 +130,11 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
                   <option value="RESOLVED">Résolue</option>
                 </select>
               </td>
-              <td>
+              <td className="hidden sm:table-cell">
                 <select
                   value={complaint.assignedAdmin.id}
                   onChange={e => handleReassign(complaint.id, e.target.value)}
-                  className="select select-sm"
+                  className="select select-xs sm:select-sm"
                 >
                   {admins.map(admin => (
                     <option key={admin.id} value={admin.id}>
@@ -143,10 +143,10 @@ export function ComplaintsTable({ complaints, admins }: ComplaintsTableProps) {
                   ))}
                 </select>
               </td>
-              <td>{new Date(complaint.createdAt).toLocaleDateString('fr-FR')}</td>
+              <td className="hidden md:table-cell">{new Date(complaint.createdAt).toLocaleDateString('fr-FR')}</td>
               <td>
-                <button className="btn btn-ghost btn-sm" title="Voir détails">
-                  <FiEdit className="w-4 h-4" />
+                <button className="btn btn-ghost btn-xs sm:btn-sm" title="Voir détails">
+                  <FiEdit className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
               </td>
             </tr>

@@ -11,11 +11,13 @@ export default async function EditProductPage({
   params: { id: string }
 }) {
   const user = await requireDashboardAccess()
-  const { product } = await getProduct(params.id)
+  const productResult = await getProduct(params.id)
 
-  if (!product) {
+  if (!productResult.success || !productResult.product) {
     notFound()
   }
+
+  const product = productResult.product
 
   // Check permissions
   if (user.role === 'SUPPLIER' && product.supplierId !== user.id) {

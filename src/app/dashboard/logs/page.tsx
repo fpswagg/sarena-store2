@@ -4,7 +4,8 @@ import { LogsTable } from '@/components/LogsTable'
 
 export default async function LogsPage() {
   await requireAdmin()
-  const { logs } = await getLogs(100)
+  const logsResult = await getLogs(100)
+  const logs = logsResult.success ? logsResult.logs : []
 
   return (
     <div>
