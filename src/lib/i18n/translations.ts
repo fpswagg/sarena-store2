@@ -42,6 +42,10 @@ const fr = {
     count: 'produit | produits',
     soldOut: 'Produit épuisé',
     notifyMe: 'Me notifier',
+    comingSoon: 'Bientôt disponible...',
+    comingSoonSubtitle: 'De nouveaux produits arrivent très vite !',
+    available: 'disponible',
+    availablePlural: 'disponibles',
   },
 
   productDetail: {
@@ -187,6 +191,10 @@ const en: typeof fr = {
     count: 'product | products',
     soldOut: 'Sold out',
     notifyMe: 'Notify me',
+    comingSoon: 'Coming soon...',
+    comingSoonSubtitle: 'New products are arriving very soon!',
+    available: 'available',
+    availablePlural: 'available',
   },
 
   productDetail: {

@@ -86,9 +86,9 @@ export function ProductGrid({
           className="text-center py-12 sm:py-16"
         >
           <div className="text-4xl sm:text-5xl mb-4">✨</div>
-          <p className="text-base-content/60 font-medium">Bientôt disponible...</p>
+          <p className="text-base-content/60 font-medium">{t.products.comingSoon}</p>
           <p className="text-sm text-base-content/40 mt-1">
-            De nouveaux produits arrivent très vite !
+            {t.products.comingSoonSubtitle}
           </p>
         </motion.div>
       ) : (
@@ -121,8 +121,9 @@ export function ProductGrid({
         transition={{ delay: 0.5 }}
         className="text-center text-xs text-base-content/40 mt-6 cursor-default"
       >
-        {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} disponible
-        {filteredProducts.length > 1 ? 's' : ''}
+        {filteredProducts.length}{' '}
+        {filteredProducts.length === 1 ? t.products.count.split(' | ')[0] : t.products.count.split(' | ')[1]}{' '}
+        {filteredProducts.length === 1 ? t.products.available : t.products.availablePlural}
       </motion.p>
     </div>
   )
