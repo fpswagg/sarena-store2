@@ -7,7 +7,7 @@ import { FiEdit, FiTrash2, FiX } from 'react-icons/fi'
 import { ProductWithRelations } from '@/types'
 import { getTranslated } from '@/lib/i18n/context'
 import { Locale } from '@/lib/i18n/translations'
-import { deleteProduct, markProductUnavailable } from '@/app/actions/products'
+import { deleteProduct, markProductUnavailable, getProductRelationships } from '@/app/actions/products'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
@@ -28,17 +28,46 @@ export function ProductTable({
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
+    // Get relationships to show warning
+    const relationshipsResult = await getProductRelationships(id)
+    const relationships = relationshipsResult.success ? relationshipsResult.relationships : null
+
+    // Build warning message
+    let warningMessage = 'Êtes-vous sûr de vouloir supprimer ce produit ?\n\n'
+    
+    if (relationships) {
+      const warnings: string[] = []
+      if (relationships.ratingsCount > 0) {
+        warnings.push(`• ${relationships.ratingsCount} avis seront supprimés`)
+      }
+      if (relationships.complaintsCount > 0) {
+        warnings.push(`• ${relationships.complaintsCount} plainte(s) seront dissociées du produit`)
+      }
+      if (relationships.interactionsCount > 0) {
+        warnings.push(`• ${relationships.interactionsCount} interaction(s) seront supprimées`)
+      }
+      if (relationships.hasStats) {
+        warnings.push('• Les statistiques du produit seront supprimées')
+      }
+
+      if (warnings.length > 0) {
+        warningMessage += 'Cette action supprimera également :\n' + warnings.join('\n') + '\n\n'
+      }
+    }
+
+    warningMessage += 'Cette action est irréversible.'
+
+    if (!confirm(warningMessage)) return
 
     setDeletingId(id)
     const result = await deleteProduct(id)
     setDeletingId(null)
 
     if (result.success) {
-      toast.success('Produit supprimé')
+      toast.success('Produit supprimé avec succès')
       router.refresh()
     } else {
-      toast.error(result.error || 'Erreur')
+      toast.error(result.error || 'Erreur lors de la suppression')
     }
   }
 

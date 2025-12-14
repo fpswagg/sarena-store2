@@ -278,7 +278,39 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 }
 
-// Delete product (Admin only)
+// Get product relationships (for warnings)
+export async function getProductRelationships(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        ratings: { select: { id: true } },
+        complaints: { select: { id: true } },
+        interactions: { select: { id: true } },
+        stats: { select: { id: true } },
+      },
+    })
+
+    if (!product) {
+      return { success: false, relationships: null }
+    }
+
+    return {
+      success: true,
+      relationships: {
+        ratingsCount: product.ratings.length,
+        complaintsCount: product.complaints.length,
+        interactionsCount: product.interactions.length,
+        hasStats: !!product.stats,
+      },
+    }
+  } catch (error) {
+    console.error('Error fetching product relationships:', error)
+    return { success: false, relationships: null }
+  }
+}
+
+// Delete product (Admin only) - handles all relationships
 export async function deleteProduct(id: string) {
   try {
     const { user } = await getSession()
@@ -286,6 +318,51 @@ export async function deleteProduct(id: string) {
       return { success: false, error: 'Non autorisé' }
     }
 
+    // Check if product exists
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        ratings: true,
+        complaints: true,
+        interactions: true,
+        stats: true,
+      },
+    })
+
+    if (!product) {
+      return { success: false, error: 'Produit introuvable' }
+    }
+
+    // Delete all related records first (to avoid foreign key constraints)
+    // Delete ratings
+    if (product.ratings.length > 0) {
+      await prisma.rating.deleteMany({
+        where: { productId: id },
+      })
+    }
+
+    // Delete interactions
+    if (product.interactions.length > 0) {
+      await prisma.interaction.deleteMany({
+        where: { productId: id },
+      })
+    }
+
+    // Delete product stats
+    if (product.stats) {
+      await prisma.productStat.delete({
+        where: { productId: id },
+      })
+    }
+
+    // Note: Complaints are kept but their productId is set to null
+    // This preserves complaint history even if product is deleted
+    await prisma.complaint.updateMany({
+      where: { productId: id },
+      data: { productId: null },
+    })
+
+    // Now delete the product
     await prisma.product.delete({
       where: { id },
     })

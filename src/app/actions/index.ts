@@ -10,5 +10,5 @@ export {
   updateComplaintMessage,
 } from './complaints'
 export { getLogs, exportLogs } from './logs'
-export { getProducts, getProduct, getDefaultAdmin, getAllAdmins } from './products'
+export { getProducts, getProduct, getDefaultAdmin, getAllAdmins, getProductRelationships } from './products'
 export { getUserBySupabaseId } from './users'
