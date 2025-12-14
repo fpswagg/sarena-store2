@@ -8,10 +8,11 @@ import { notFound } from 'next/navigation'
 export default async function EditProductPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
+  const { id } = await params
   const user = await requireDashboardAccess()
-  const productResult = await getProduct(params.id)
+  const productResult = await getProduct(id)
 
   if (!productResult.success || !productResult.product) {
     notFound()
