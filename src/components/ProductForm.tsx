@@ -12,7 +12,7 @@ import { MultiImageUpload } from '@/components/MultiImageUpload'
 
 interface ProductFormProps {
   product?: ProductWithRelations
-  suppliers?: Array<{ id: string; fullName: string | null; email: string | null }>
+  suppliers?: Array<{ id: string; fullName: string | null; email: string | null; role?: string }>
   currentUser: { id: string; role: Role }
 }
 
@@ -211,6 +211,7 @@ export function ProductForm({ product, suppliers = [], currentUser }: ProductFor
               {suppliers.map(supplier => (
                 <option key={supplier.id} value={supplier.id}>
                   {supplier.fullName || supplier.email}
+                  {'role' in supplier && supplier.role === 'ADMIN' && ' (Admin)'}
                 </option>
               ))}
             </select>

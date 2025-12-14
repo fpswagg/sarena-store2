@@ -158,8 +158,20 @@ export async function createProduct(formData: FormData) {
     }
 
     // Supplier can only create products for themselves
+    // Admin can create products for themselves or any supplier/admin
     if (user.role === Role.SUPPLIER && supplierId !== user.id) {
       return { success: false, error: 'Non autorisé' }
+    }
+
+    // Validate that supplierId is a valid ADMIN or SUPPLIER
+    if (user.role === Role.ADMIN) {
+      const supplier = await prisma.user.findUnique({
+        where: { id: supplierId },
+        select: { role: true },
+      })
+      if (!supplier || (supplier.role !== Role.ADMIN && supplier.role !== Role.SUPPLIER)) {
+        return { success: false, error: 'Fournisseur invalide' }
+      }
     }
 
     // Create product
@@ -255,6 +267,22 @@ export async function updateProduct(id: string, formData: FormData) {
       return { success: false, error: 'Le stock ne peut pas être négatif' }
     }
 
+    // Validate supplierId if admin is changing it
+    let finalSupplierId = supplierId
+    if (user.role === Role.ADMIN && supplierId !== existingProduct.supplierId) {
+      const supplier = await prisma.user.findUnique({
+        where: { id: supplierId },
+        select: { role: true },
+      })
+      if (!supplier || (supplier.role !== Role.ADMIN && supplier.role !== Role.SUPPLIER)) {
+        return { success: false, error: 'Fournisseur invalide' }
+      }
+      finalSupplierId = supplierId
+    } else if (user.role === Role.SUPPLIER) {
+      // Supplier cannot change supplierId
+      finalSupplierId = existingProduct.supplierId
+    }
+
     // Update product
     await prisma.product.update({
       where: { id },
@@ -268,7 +296,7 @@ export async function updateProduct(id: string, formData: FormData) {
         thumbnail,
         images,
         isNew,
-        supplierId: user.role === Role.ADMIN ? supplierId : existingProduct.supplierId,
+        supplierId: finalSupplierId,
       },
     })
 

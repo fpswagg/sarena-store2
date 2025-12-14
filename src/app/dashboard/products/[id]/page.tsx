@@ -25,16 +25,25 @@ export default async function EditProductPage({
     notFound()
   }
 
-  // Get suppliers if admin
+  // Get suppliers if admin (includes both ADMIN and SUPPLIER roles)
   const suppliers =
     user.role === 'ADMIN'
       ? await prisma.user.findMany({
-          where: { role: 'SUPPLIER' },
+          where: {
+            role: {
+              in: ['ADMIN', 'SUPPLIER'],
+            },
+          },
           select: {
             id: true,
             fullName: true,
             email: true,
+            role: true,
           },
+          orderBy: [
+            { role: 'asc' }, // Admins first
+            { fullName: 'asc' },
+          ],
         })
       : []
 
