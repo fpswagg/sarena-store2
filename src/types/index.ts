@@ -120,7 +120,18 @@ export const BADGES: Record<ProductBadge, { label: string; emoji: string; color:
 }
 
 // Social media platform type
-export type SocialMediaPlatform = 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'github' | 'youtube' | 'whatsapp' | 'email' | 'tiktok' | 'snapchat'
+export type SocialMediaPlatform =
+  | 'facebook'
+  | 'twitter'
+  | 'instagram'
+  | 'linkedin'
+  | 'github'
+  | 'youtube'
+  | 'whatsapp'
+  | 'email'
+  | 'tiktok'
+  | 'snapchat'
+  | 'link'
 
 export type SocialMediaLink = {
   platform: SocialMediaPlatform

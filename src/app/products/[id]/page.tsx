@@ -69,9 +69,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const { id } = await params
   
   // Validate ID format (should be UUID)
-  if (!id || typeof id !== 'string' || !/^[a-f0-9-]{36}$/i.test(id)) {
-    notFound()
-  }
+  // if (!id || typeof id !== 'string' || !/^[a-f0-9-]{36}$/i.test(id)) {
+  //   notFound()
+  // }
 
   const [productResult, adminResult, productsResult] = await Promise.all([
     getProduct(id),

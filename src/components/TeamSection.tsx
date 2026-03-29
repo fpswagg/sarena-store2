@@ -127,6 +127,7 @@ export const defaultTeamMembers: TeamMember[] = [
       { platform: 'linkedin', url: 'https://linkedin.com/in/fpswagg' },
       { platform: 'tiktok', url: 'https://tiktok.com/@fpswagg' },
       { platform: 'snapchat', url: 'https://snapchat.com/add/fpswagg' },
+      { platform: 'link', url: 'https://fpswagg.site' }
     ],
   },
   {
@@ -138,7 +139,6 @@ export const defaultTeamMembers: TeamMember[] = [
       { platform: 'instagram', url: 'https://instagram.com/dyllan_bnm' },
       { platform: 'twitter', url: 'https://twitter.com/dyllan_bnm' },
       { platform: 'tiktok', url: 'https://tiktok.com/@dyllan_bnm' },
-      { platform: 'snapchat', url: 'https://snapchat.com/add/dyllan_bnm' },
     ],
   },
   {
@@ -154,7 +154,16 @@ export const defaultTeamMembers: TeamMember[] = [
   {
     id: '4',
     name: 'Akera Jerry',
+    avatar: '/akera.png',
+    socialMedia: [
+      { platform: 'tiktok', url: 'https://www.tiktok.com/@jerryminkem' },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Gnowa Rickneil',
+    role: 'GWorld1',
     avatar: '/pp.png',
     // No social media - will show message in dialog
-  },
+  }
 ]

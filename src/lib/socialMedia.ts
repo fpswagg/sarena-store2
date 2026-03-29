@@ -3,6 +3,7 @@
 import React, { type ComponentType } from 'react'
 import { SocialMediaPlatform } from '@/types'
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiGithub, FiYoutube, FiPhone, FiMail, FiLink } from 'react-icons/fi'
+import { SiSnapchat } from 'react-icons/si'
 
 // TikTok icon component (using SVG since react-icons doesn't have TikTok)
 const TikTokIcon: ComponentType<{ className?: string }> = ({ className }) => {
@@ -32,7 +33,8 @@ export const SOCIAL_MEDIA_LOGOS: Record<SocialMediaPlatform, ComponentType<{ cla
   whatsapp: FiPhone,
   email: FiMail,
   tiktok: TikTokIcon,
-  snapchat: FiLink,
+  snapchat: SiSnapchat,
+  link: FiLink,
 }
 
 // Social media platform labels
@@ -47,5 +49,6 @@ export const SOCIAL_MEDIA_LABELS: Record<SocialMediaPlatform, { fr: string; en: 
   email: { fr: 'Email', en: 'Email' },
   tiktok: { fr: 'TikTok', en: 'TikTok' },
   snapchat: { fr: 'Snapchat', en: 'Snapchat' },
+  link: { fr: 'Site web', en: 'Website' },
 }
 
