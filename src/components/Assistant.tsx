@@ -166,7 +166,10 @@ export function Assistant({ bot, apiUrl }: { bot: Chatbot; apiUrl: string }) {
   }, [messages, open])
 
   const last = messages[messages.length - 1]
-  const choices = !busy && last?.role === 'assistant' ? last.choices : undefined
+  const choices =
+    !busy && last?.role === 'assistant' && Array.isArray(last.choices?.options)
+      ? last.choices
+      : undefined
   const showSuggestions = loaded && messages.length === 0 && bot.suggestions.length > 0
 
   return (

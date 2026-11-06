@@ -265,6 +265,20 @@ export async function getAccessToken(): Promise<string | null> {
 }
 
 /**
+ * For /auth/sss/refresh, the only place proxy.ts sends people to. A token still good but a plain
+ * expiry copy lost or wrong: writes the copy back, or proxy.ts would send them here forever.
+ */
+export async function renewSession(): Promise<boolean> {
+  const session = await getSession();
+  if (!session) return false;
+  if (session.expiresAt - EARLY_REFRESH_MS > Date.now()) {
+    await saveSession(session);
+    return true;
+  }
+  return Boolean(await getAccessToken());
+}
+
+/**
  * Calls the SSS API as the signed-in visitor (`/api/v1/...`), refreshing the token when
  * needed. What it can reach depends on the scopes. Route handlers only.
  */
