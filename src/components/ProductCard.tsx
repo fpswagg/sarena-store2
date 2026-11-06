@@ -195,9 +195,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             </motion.span>
 
             {/* Description */}
-            <p className="text-xs sm:text-[11px] mb-2 flex-1 text-base-content/60 line-clamp-2">
-              {description}
-            </p>
+            <div className="mb-2 flex-1">
+              <p className="text-xs sm:text-[11px] text-base-content/60 line-clamp-2">{description}</p>
+            </div>
 
             {/* Price & CTA */}
             <div className="flex items-center justify-between pt-2.5 sm:pt-2 border-t border-base-200 flex-shrink-0">
@@ -210,7 +210,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                   <>
                     <span
                       className={clsx(
-                        'text-sm sm:text-base font-heading font-bold',
+                        'text-sm sm:text-base font-heading font-bold whitespace-nowrap',
                         soldOut ? 'text-base-content/40 line-through' : 'text-primary'
                       )}
                     >
@@ -224,7 +224,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               </div>
 
               {soldOut ? (
-                <span className="text-xs sm:text-[10px] text-base-content/40 font-medium">
+                <span className="hidden sm:inline text-[10px] text-base-content/40 font-medium">
                   {t.products.outOfStock}
                 </span>
               ) : (
