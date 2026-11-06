@@ -96,3 +96,12 @@ export function serviceMessage(service: Service, locale: Locale): string {
 export function askAssistant(question?: string) {
   window.dispatchEvent(new CustomEvent('sss:ask', { detail: question ?? '' }))
 }
+
+/** The few items the home page shows: the featured ones, else the first ones, up to `count`. */
+export function homePicks<T extends { metadata: { featured?: boolean } | null }>(
+  items: T[],
+  count: number
+): T[] {
+  const featured = items.filter(item => item.metadata?.featured)
+  return (featured.length > 0 ? featured : items).slice(0, count)
+}

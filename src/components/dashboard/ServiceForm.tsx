@@ -24,6 +24,7 @@ export function ServiceForm({ service }: { service?: DashRecord }) {
     area: typeof data.area === 'string' ? data.area : '',
     price: data.price != null ? String(data.price) : '',
     active: data.active !== false,
+    featured: meta.featured === true,
     order: typeof meta.order === 'number' ? String(meta.order) : '',
   })
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
@@ -43,6 +44,7 @@ export function ServiceForm({ service }: { service?: DashRecord }) {
         },
       },
     }
+    metadata.featured = form.featured
     if (form.order.trim()) metadata.order = Number(form.order)
     else delete metadata.order
 
@@ -136,6 +138,12 @@ export function ServiceForm({ service }: { service?: DashRecord }) {
         </Field>
       </div>
 
+      <Toggle
+        label="Sur la page d'accueil"
+        hint="Les 3 premiers services cochés passent sur l'accueil."
+        checked={form.featured}
+        onChange={value => set('featured', value)}
+      />
       <Toggle
         label="Visible sur le site"
         checked={form.active}

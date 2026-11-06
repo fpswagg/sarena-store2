@@ -54,7 +54,7 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
     <>
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
-          href="/#produits"
+          href="/products"
           className="inline-flex items-center gap-1.5 text-sm text-base-content/60 hover:text-primary transition-colors"
         >
           <FiArrowLeft className="w-4 h-4" />

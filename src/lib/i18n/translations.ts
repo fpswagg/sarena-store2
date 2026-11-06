@@ -27,8 +27,10 @@ const fr = {
     talk: 'En parler',
     ask: 'Poser une question',
     question: 'Je voudrais en savoir plus sur : {name}',
+    seeAll: 'Voir tous les services',
   },
   products: {
+    seeAll: 'Voir tous les produits',
     title: 'Nos Produits',
     subtitle: 'Une sélection de produits pour vous',
     badge: 'Nos produits',
@@ -141,8 +143,10 @@ const en: Translations = {
     talk: 'Talk about it',
     ask: 'Ask a question',
     question: 'I’d like to know more about: {name}',
+    seeAll: 'See all services',
   },
   products: {
+    seeAll: 'See all products',
     title: 'Our Products',
     subtitle: 'A selection of products for you',
     badge: 'Our products',

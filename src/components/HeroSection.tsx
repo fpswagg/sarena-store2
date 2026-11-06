@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { FiArrowDown, FiShield, FiMapPin, FiMessageCircle } from 'react-icons/fi'
+import { FiArrowRight, FiShield, FiMapPin, FiMessageCircle } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { useI18n } from '@/lib/i18n/context'
 import { fill } from '@/lib/i18n/translations'
@@ -107,13 +107,13 @@ export function HeroSection() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
           >
             <motion.a
-              href="/#produits"
+              href="/products"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="btn btn-primary btn-md sm:btn-lg gap-2 shadow-lg shadow-primary/25 font-heading w-full sm:w-auto"
             >
               {t.hero.cta}
-              <FiArrowDown className="w-4 h-4 sm:w-5 sm:h-5" />
+              <FiArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.a>
 
             <motion.a

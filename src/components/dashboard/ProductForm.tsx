@@ -237,7 +237,7 @@ export function ProductForm({ product }: { product?: DashProduct }) {
         />
         <Toggle
           label="Populaire"
-          hint="Affiche le badge « Populaire »."
+          hint="Affiche le badge « Populaire ». Les 4 premiers cochés passent sur l'accueil."
           checked={form.featured}
           onChange={value => set('featured', value)}
         />

@@ -37,8 +37,8 @@ export function Header() {
   }, [])
 
   const navLinks = [
-    { href: '/#services', label: t.nav.services, icon: FiBriefcase },
-    { href: '/#produits', label: t.nav.products, icon: FiShoppingBag },
+    { href: '/services', label: t.nav.services, icon: FiBriefcase },
+    { href: '/products', label: t.nav.products, icon: FiShoppingBag },
     { href: '/#contact', label: t.nav.contact, icon: FiMessageCircle },
     { href: '/#equipe', label: t.nav.team, icon: FiUsers },
   ]

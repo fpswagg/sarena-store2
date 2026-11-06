@@ -68,6 +68,8 @@ export type Service = {
   metadata: {
     i18n?: { en?: { name?: string; description?: string } }
     order?: number
+    /** Shown on the home page. */
+    featured?: boolean
     [key: string]: unknown
   } | null
 }

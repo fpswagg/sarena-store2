@@ -9,7 +9,14 @@ import { fill } from '@/lib/i18n/translations'
 import { isFeatured, isNew, productCategory } from '@/lib/site'
 import { staggerContainer } from '@/lib/motion'
 
-export function ProductGrid({ products }: { products: Product[] }) {
+export function ProductGrid({
+  products,
+  compact = false,
+}: {
+  products: Product[]
+  /** Home page: the cards only, no filters and no count. */
+  compact?: boolean
+}) {
   const [filter, setFilter] = useState('all')
   const { t, locale } = useI18n()
 
@@ -38,27 +45,29 @@ export function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div>
       {/* Filter tabs - Scrollable on mobile */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex justify-start lg:justify-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
-      >
-        {filters.map(item => (
-          <motion.button
-            key={item.value}
-            onClick={() => setFilter(item.value)}
-            whileTap={{ scale: 0.95 }}
-            className={`flex-shrink-0 px-4 sm:px-5 py-2 rounded-full text-sm font-badge font-medium transition-all duration-300 ${
-              active === item.value
-                ? 'bg-primary text-primary-content shadow-lg shadow-primary/25'
-                : 'bg-base-200 hover:bg-base-300 text-base-content/70'
-            }`}
-          >
-            {item.emoji && <span className="mr-1.5">{item.emoji}</span>}
-            {item.label}
-          </motion.button>
-        ))}
-      </motion.div>
+      {!compact && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-start lg:justify-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
+        >
+          {filters.map(item => (
+            <motion.button
+              key={item.value}
+              onClick={() => setFilter(item.value)}
+              whileTap={{ scale: 0.95 }}
+              className={`flex-shrink-0 px-4 sm:px-5 py-2 rounded-full text-sm font-badge font-medium transition-all duration-300 ${
+                active === item.value
+                  ? 'bg-primary text-primary-content shadow-lg shadow-primary/25'
+                  : 'bg-base-200 hover:bg-base-300 text-base-content/70'
+              }`}
+            >
+              {item.emoji && <span className="mr-1.5">{item.emoji}</span>}
+              {item.label}
+            </motion.button>
+          ))}
+        </motion.div>
+      )}
 
       {visible.length === 0 ? (
         <motion.div
@@ -85,7 +94,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
         </motion.div>
       )}
 
-      {visible.length > 0 && (
+      {!compact && visible.length > 0 && (
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

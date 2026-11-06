@@ -40,13 +40,13 @@ export function Footer() {
           {/* Navigation - Centered on mobile */}
           <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm order-3 sm:order-2">
             <Link
-              href="/#services"
+              href="/services"
               className="text-base-content/60 hover:text-primary transition-colors"
             >
               {t.nav.services}
             </Link>
             <Link
-              href="/#produits"
+              href="/products"
               className="text-base-content/60 hover:text-primary transition-colors"
             >
               {t.nav.products}

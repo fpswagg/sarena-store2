@@ -1,9 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import type { ComponentType } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import {
+  FiArrowRight,
   FiBriefcase,
   FiCode,
   FiCpu,
@@ -54,9 +56,11 @@ function iconOf(name: string) {
 export function ServicesSection({
   services,
   hasAssistant,
+  showAllLink = false,
 }: {
   services: Service[]
   hasAssistant: boolean
+  showAllLink?: boolean
 }) {
   const { t, locale } = useI18n()
   const { whatsapp } = useSite()
@@ -131,6 +135,15 @@ export function ServicesSection({
             )
           })}
         </motion.div>
+
+        {showAllLink && (
+          <div className="text-center mt-8">
+            <Link href="/services" className="btn btn-outline btn-primary gap-2 font-heading">
+              {t.services.seeAll}
+              <FiArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   )
