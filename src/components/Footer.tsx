@@ -1,43 +1,31 @@
 'use client'
 
+import type { ComponentType } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { FaWhatsapp, FaInstagram, FaFacebook, FaTiktok } from 'react-icons/fa'
+import { FaWhatsapp } from 'react-icons/fa'
 import { FiHeart } from 'react-icons/fi'
 import { useI18n } from '@/lib/i18n/context'
+import { whatsappUrl } from '@/lib/site'
+import { useSite } from '@/lib/site-context'
+import { SOCIAL_MEDIA_LABELS, SOCIAL_MEDIA_LOGOS } from '@/lib/socialMedia'
 
-interface FooterProps {
-  whatsappNumber: string
-}
-
-export function Footer({ whatsappNumber }: FooterProps) {
+export function Footer() {
   const { locale, t } = useI18n()
+  const { whatsapp, socials } = useSite()
   const currentYear = new Date().getFullYear()
   const siteName = locale === 'fr' ? 'Boutique Sarena' : 'Sarena Store'
 
-  // Social links from env or defaults
-  const socialLinks = [
-    {
-      icon: FaWhatsapp,
-      href: `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`,
-      label: 'WhatsApp',
-    },
-    {
-      icon: FaInstagram,
-      href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || '#',
-      label: 'Instagram',
-    },
-    {
-      icon: FaFacebook,
-      href: process.env.NEXT_PUBLIC_FACEBOOK_URL || '#',
-      label: 'Facebook',
-    },
-    {
-      icon: FaTiktok,
-      href: process.env.NEXT_PUBLIC_TIKTOK_URL || '#',
-      label: 'TikTok',
-    },
-  ]
+  // WhatsApp from the business in SSS; other networks only if they are filled in there.
+  const socialLinks: { icon: ComponentType<{ className?: string }>; href: string; label: string }[] =
+    [
+      ...(whatsapp ? [{ icon: FaWhatsapp, href: whatsappUrl(whatsapp), label: 'WhatsApp' }] : []),
+      ...socials.map(social => ({
+        icon: SOCIAL_MEDIA_LOGOS[social.platform],
+        href: social.url,
+        label: SOCIAL_MEDIA_LABELS[social.platform][locale],
+      })),
+    ]
 
   return (
     <footer className="bg-base-200/30 border-t border-base-200">
@@ -50,7 +38,13 @@ export function Footer({ whatsappNumber }: FooterProps) {
           </Link>
 
           {/* Navigation - Centered on mobile */}
-          <nav className="flex items-center gap-4 sm:gap-6 text-sm order-3 sm:order-2">
+          <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm order-3 sm:order-2">
+            <Link
+              href="/#services"
+              className="text-base-content/60 hover:text-primary transition-colors"
+            >
+              {t.nav.services}
+            </Link>
             <Link
               href="/#produits"
               className="text-base-content/60 hover:text-primary transition-colors"
@@ -68,6 +62,13 @@ export function Footer({ whatsappNumber }: FooterProps) {
               className="text-base-content/60 hover:text-primary transition-colors"
             >
               {t.nav.team}
+            </Link>
+            <Link
+              href="/dashboard"
+              prefetch={false}
+              className="text-base-content/40 hover:text-primary transition-colors"
+            >
+              {t.nav.teamSpace}
             </Link>
           </nav>
 

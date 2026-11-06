@@ -1,7 +1,7 @@
 'use client'
 
 import React, { type ComponentType } from 'react'
-import { SocialMediaPlatform } from '@/types'
+import type { SocialMediaPlatform } from '@/lib/types'
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiGithub, FiYoutube, FiPhone, FiMail, FiLink } from 'react-icons/fi'
 import { SiSnapchat } from 'react-icons/si'
 

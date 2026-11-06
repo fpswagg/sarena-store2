@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Locale, translations, Translations } from './translations'
+import { type Locale, translations, type Translations } from './translations'
 
 interface I18nContextType {
   locale: Locale
@@ -20,10 +20,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       // Initialize locale from localStorage on mount
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLocale(saved)
+      document.documentElement.lang = saved
     } else {
       const browserLang = navigator.language.startsWith('fr') ? 'fr' : 'en'
       // Initialize locale from browser on mount
       setLocale(browserLang)
+      document.documentElement.lang = browserLang
     }
   }, [])
 
@@ -46,13 +48,4 @@ export function useI18n() {
     throw new Error('useI18n must be used within I18nProvider')
   }
   return context
-}
-
-export function getTranslated(
-  obj: { fr?: string; en?: string } | string | null | undefined,
-  locale: Locale
-): string {
-  if (!obj) return ''
-  if (typeof obj === 'string') return obj
-  return obj[locale] || obj.fr || obj.en || ''
 }

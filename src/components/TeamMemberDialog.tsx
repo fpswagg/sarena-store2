@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiX } from 'react-icons/fi'
 import Image from 'next/image'
-import { TeamMember } from '@/types'
+import type { TeamMember } from '@/lib/types'
+import { memberBio, memberTitle } from '@/lib/site'
 import { useI18n } from '@/lib/i18n/context'
 import { modalOverlay } from '@/lib/motion'
 import { SOCIAL_MEDIA_LOGOS, SOCIAL_MEDIA_LABELS } from '@/lib/socialMedia'
@@ -20,7 +21,9 @@ export function TeamMemberDialog({ isOpen, onClose, member }: TeamMemberDialogPr
 
   if (!member) return null
 
-  const hasSocialMedia = member.socialMedia && member.socialMedia.length > 0
+  const hasSocialMedia = member.socials.length > 0
+  const title = memberTitle(member, locale)
+  const bio = memberBio(member, locale)
 
   return (
     <AnimatePresence>
@@ -76,21 +79,15 @@ export function TeamMemberDialog({ isOpen, onClose, member }: TeamMemberDialogPr
               <div className="text-center mb-6">
                 <div className="relative w-24 h-24 mx-auto mb-4 rounded-2xl overflow-hidden ring-2 ring-primary/20">
                   <Image
-                    src={member.avatar}
+                    src={member.photo || '/default-avatar.svg'}
                     alt={member.name}
                     fill
                     className="object-cover"
                     sizes="96px"
                   />
                 </div>
-                {member.role && (
-                  <p className="text-sm text-base-content/60 font-medium">{member.role}</p>
-                )}
-                {member.description && (
-                  <p className="text-sm text-base-content/70 mt-2 max-w-sm mx-auto">
-                    {member.description}
-                  </p>
-                )}
+                {title && <p className="text-sm text-base-content/60 font-medium">{title}</p>}
+                {bio && <p className="text-sm text-base-content/70 mt-2 max-w-sm mx-auto">{bio}</p>}
               </div>
 
               {/* Social Media Links */}
@@ -100,9 +97,9 @@ export function TeamMemberDialog({ isOpen, onClose, member }: TeamMemberDialogPr
                     {t.team.socialMedia}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {member.socialMedia!.map((social, index) => {
-                      const Icon = SOCIAL_MEDIA_LOGOS[social.platform]
-                      const label = SOCIAL_MEDIA_LABELS[social.platform][locale]
+                    {member.socials.map((social, index) => {
+                      const Icon = SOCIAL_MEDIA_LOGOS[social.platform] ?? SOCIAL_MEDIA_LOGOS.link
+                      const label = (SOCIAL_MEDIA_LABELS[social.platform] ?? SOCIAL_MEDIA_LABELS.link)[locale]
 
                       return (
                         <motion.a

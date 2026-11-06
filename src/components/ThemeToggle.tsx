@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { FiSun, FiMoon } from 'react-icons/fi'
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="btn btn-circle btn-ghost" aria-label="Toggle theme">
+      <button className="btn btn-ghost btn-sm btn-square" aria-label="Toggle theme">
         <div className="w-5 h-5" />
       </button>
     )
@@ -38,7 +38,7 @@ export function ThemeToggle() {
   return (
     <motion.button
       onClick={toggleTheme}
-      className="btn btn-circle btn-ghost relative overflow-hidden"
+      className="btn btn-ghost btn-sm btn-square relative overflow-hidden"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}

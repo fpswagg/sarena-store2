@@ -2,17 +2,17 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { FiArrowDown, FiShield, FiRefreshCw, FiMessageCircle } from 'react-icons/fi'
+import { FiArrowDown, FiShield, FiMapPin, FiMessageCircle } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { useI18n } from '@/lib/i18n/context'
+import { fill } from '@/lib/i18n/translations'
+import { useSite } from '@/lib/site-context'
+import { whatsappUrl } from '@/lib/site'
 import { floatingElement, whatsappPulse } from '@/lib/motion'
 
-interface HeroSectionProps {
-  whatsappNumber: string
-}
-
-export function HeroSection({ whatsappNumber }: HeroSectionProps) {
+export function HeroSection() {
   const { t } = useI18n()
+  const { whatsapp, city } = useSite()
   const containerRef = useRef<HTMLElement>(null)
 
   // Parallax effect
@@ -67,7 +67,7 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
             className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-base-100 border border-base-200 mb-4 sm:mb-6"
           >
             <FiShield className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-            <span className="text-xs sm:text-sm font-medium text-primary">{t.hero.badge}</span>
+            <span className="text-xs sm:text-sm font-medium text-primary">{fill(t.hero.badge, { city })}</span>
           </motion.div>
 
           {/* Title - Simplified on mobile */}
@@ -96,7 +96,7 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-lg text-base-content/60 mb-6 sm:mb-8 max-w-lg mx-auto leading-relaxed px-2 sm:px-0"
           >
-            {t.hero.subtitle}
+            {fill(t.hero.subtitle, { city })}
           </motion.p>
 
           {/* CTA Buttons - Simplified on mobile */}
@@ -117,7 +117,7 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
             </motion.a>
 
             <motion.a
-              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`}
+              href={whatsappUrl(whatsapp)}
               target="_blank"
               rel="noopener noreferrer"
               variants={whatsappPulse}
@@ -140,8 +140,8 @@ export function HeroSection({ whatsappNumber }: HeroSectionProps) {
           >
             {[
               { icon: FiShield, text: t.hero.trust1 },
-              { icon: FiRefreshCw, text: t.hero.trust2 },
-              { icon: FiMessageCircle, text: t.hero.trust3 },
+              { icon: FiMessageCircle, text: t.hero.trust2 },
+              { icon: FiMapPin, text: fill(t.hero.trust3, { city }) },
             ].map((item, i) => (
               <motion.div
                 key={i}

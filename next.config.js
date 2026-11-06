@@ -2,21 +2,12 @@
 const nextConfig = {
   images: {
     unoptimized: true,
-    formats: ['image/avif', 'image/webp'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb',
+      // Photos sent from the dashboard (6 MB, in base64).
+      bodySizeLimit: '8mb',
     },
   },
 }

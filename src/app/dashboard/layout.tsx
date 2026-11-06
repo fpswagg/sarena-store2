@@ -1,21 +1,13 @@
-import { ReactNode } from 'react'
-import { getSession } from '@/lib/auth'
-import { requireDashboardAccess } from '@/lib/utils/auth'
-import { DashboardLayoutClient } from './DashboardLayoutClient'
+import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  const sessionUser = await requireDashboardAccess()
-
-  // Transform SessionUser to match DashboardLayoutClient expected type
-  const user = {
-    id: sessionUser.id,
-    fullName: sessionUser.name,
-    email: sessionUser.email,
-    avatar: sessionUser.image,
-    role: sessionUser.role,
-  }
-
-  return <DashboardLayoutClient user={user}>{children}</DashboardLayoutClient>
+export const metadata: Metadata = {
+  title: 'Dashboard',
+  robots: { index: false, follow: false },
 }
 
+export const dynamic = 'force-dynamic'
 
+export default function DashboardRoot({ children }: { children: ReactNode }) {
+  return children
+}

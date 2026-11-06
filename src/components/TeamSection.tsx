@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { TeamMember } from '@/types'
+import type { TeamMember } from '@/lib/types'
+import { memberTitle } from '@/lib/site'
 import { useI18n } from '@/lib/i18n/context'
 import { fadeUp, staggerContainer } from '@/lib/motion'
 import { TeamMemberDialog } from './TeamMemberDialog'
@@ -13,9 +14,11 @@ interface TeamSectionProps {
 }
 
 export function TeamSection({ members }: TeamSectionProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  if (members.length === 0) return null
 
   const handleMemberClick = (member: TeamMember) => {
     setSelectedMember(member)
@@ -35,7 +38,7 @@ export function TeamSection({ members }: TeamSectionProps) {
         <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-secondary/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +62,7 @@ export function TeamSection({ members }: TeamSectionProps) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-6"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6"
         >
           {members.map((member, index) => (
             <motion.div
@@ -75,7 +78,7 @@ export function TeamSection({ members }: TeamSectionProps) {
 
                 <div className="relative w-full h-full rounded-2xl overflow-hidden ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all duration-300 shadow-lg">
                   <Image
-                    src={member.avatar}
+                    src={member.photo || '/default-avatar.svg'}
                     alt={member.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -84,20 +87,20 @@ export function TeamSection({ members }: TeamSectionProps) {
                 </div>
 
                 {/* Role badge */}
-                {member.role && (
+                {memberTitle(member, locale) && (
                   <motion.span
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + index * 0.1 }}
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-base-100 border border-base-200 text-[10px] font-badge font-medium text-primary shadow-sm whitespace-nowrap"
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 max-w-[9rem] truncate px-2.5 py-0.5 rounded-full bg-base-100 border border-base-200 text-[10px] font-badge font-medium text-primary shadow-sm whitespace-nowrap"
                   >
-                    {member.role}
+                    {memberTitle(member, locale)}
                   </motion.span>
                 )}
               </motion.div>
 
-              <h3 className="font-heading font-semibold text-sm group-hover:text-primary transition-colors">
+              <h3 className="mt-5 font-heading font-semibold text-sm group-hover:text-primary transition-colors">
                 {member.name}
               </h3>
             </motion.div>
@@ -114,56 +117,3 @@ export function TeamSection({ members }: TeamSectionProps) {
     </section>
   )
 }
-
-export const defaultTeamMembers: TeamMember[] = [
-  {
-    id: '1',
-    name: 'François-Philippe',
-    role: 'fpswagg',
-    avatar: '/fpswagg.jpg',
-    socialMedia: [
-      { platform: 'github', url: 'https://github.com/fpswagg' },
-      { platform: 'twitter', url: 'https://twitter.com/fpswagg' },
-      { platform: 'linkedin', url: 'https://linkedin.com/in/fpswagg' },
-      { platform: 'tiktok', url: 'https://tiktok.com/@fpswagg' },
-      { platform: 'snapchat', url: 'https://snapchat.com/add/fpswagg' },
-      { platform: 'link', url: 'https://fpswagg.site' }
-    ],
-  },
-  {
-    id: '2',
-    name: 'Dyllan Binam',
-    role: 'dyllan_bnm',
-    avatar: '/dyllan_bnm.png',
-    socialMedia: [
-      { platform: 'instagram', url: 'https://instagram.com/dyllan_bnm' },
-      { platform: 'twitter', url: 'https://twitter.com/dyllan_bnm' },
-      { platform: 'tiktok', url: 'https://tiktok.com/@dyllan_bnm' },
-    ],
-  },
-  {
-    id: '3',
-    name: 'Maenhout Stef',
-    role: 'Mr.Teddy',
-    avatar: '/mr_teddy.png',
-    socialMedia: [
-      { platform: 'instagram', url: 'https://www.instagram.com/mr.teddy343' },
-      { platform: 'tiktok', url: 'https://tiktok.com/@mr.teddy343' },
-    ],
-  },
-  {
-    id: '4',
-    name: 'Akera Jerry',
-    avatar: '/akera.png',
-    socialMedia: [
-      { platform: 'tiktok', url: 'https://www.tiktok.com/@jerryminkem' },
-    ],
-  },
-  {
-    id: '5',
-    name: 'Gnowa Rickneil',
-    role: 'GWorld1',
-    avatar: '/pp.png',
-    // No social media - will show message in dialog
-  }
-]

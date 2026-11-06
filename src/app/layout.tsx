@@ -1,92 +1,57 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
+import { Fredoka, Inter, Poppins } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import { config } from '@/lib/config'
 import { I18nProvider } from '@/lib/i18n/context'
 import './globals.css'
 
+const heading = Poppins({
+  subsets: ['latin'],
+  weight: ['500', '600', '700', '800', '900'],
+  variable: '--font-heading',
+  display: 'swap',
+})
+const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
+const badge = Fredoka({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-badge',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://sarenastore.cm'),
-  title: {
-    default: 'Boutique Sarena | Shopping Premium au Cameroun',
-    template: '%s | Boutique Sarena',
-  },
-  description:
-    'Boutique sécurisée et conviviale au Cameroun. Découvrez une sélection unique de produits de qualité. Satisfait ou remboursé. Commandez via WhatsApp.',
-  keywords: [
-    'boutique sarena',
-    'sarena store',
-    'shopping cameroun',
-    'boutique cameroun',
-    'produits premium',
-    'achat en ligne cameroun',
-    'douala',
-    'yaounde',
-    'whatsapp shopping',
-    'satisfait ou remboursé',
-  ],
-  authors: [{ name: 'Sarena Group' }],
-  creator: 'Sarena Group',
-  publisher: 'Sarena Group',
-  icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'fr_CM',
-    alternateLocale: 'en_US',
-    url: 'https://sarenastore.cm',
-    siteName: 'Boutique Sarena',
-    title: 'Boutique Sarena | Shopping Premium au Cameroun',
-    description: 'Boutique sécurisée et conviviale. Produits de qualité, satisfait ou remboursé. Commandez via WhatsApp.',
-    images: [
-      {
-        url: '/logo.png',
-        width: 512,
-        height: 512,
-        alt: 'Boutique Sarena Logo',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Boutique Sarena',
-    description: 'Shopping premium au Cameroun. Satisfait ou remboursé.',
-    images: ['/logo.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  alternates: {
-    canonical: 'https://sarenastore.cm',
-  },
+  metadataBase: new URL(config.siteUrl),
+  icons: { icon: '/logo.png', shortcut: '/logo.png', apple: '/logo.png' },
 }
+
+export const viewport: Viewport = { themeColor: '#F59E0B' }
+
+// Applies the saved theme before the first paint (no flash).
+const THEME_SCRIPT = `try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}`
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr" data-theme="dark" suppressHydrationWarning>
+    <html
+      lang="fr"
+      data-theme="dark"
+      className={`${heading.variable} ${body.variable} ${badge.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="icon" href="/logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/logo.png" />
-        <meta name="theme-color" content="#F59E0B" />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className="min-h-screen bg-base-100 text-base-content antialiased">
+      <body className="min-h-screen bg-base-100 text-base-content">
         <I18nProvider>
           {children}
           <Toaster
             position="bottom-center"
             toastOptions={{
-              className: 'bg-base-100 text-base-content border border-base-200',
-              duration: 3000,
+              style: {
+                background: 'var(--color-base-200)',
+                color: 'var(--color-base-content)',
+                borderRadius: '0.875rem',
+              },
             }}
           />
         </I18nProvider>
