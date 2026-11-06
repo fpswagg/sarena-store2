@@ -88,8 +88,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               : 'bg-base-100 border-base-200 hover:border-primary/30 card-depth hover:card-depth-hover'
           )}
         >
-          {/* Image - Rectangular on mobile, square on desktop */}
-          <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden flex-shrink-0 bg-base-200">
+          {/* Image - Square everywhere: two columns on a phone leave no room for a wide one */}
+          <div className="relative aspect-square overflow-hidden flex-shrink-0 bg-base-200">
             {image ? (
               <>
                 {isImageLoading && (
@@ -104,7 +104,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                     isImageLoading ? 'opacity-0' : 'opacity-100',
                     !soldOut && 'group-hover:scale-110'
                   )}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 1024px) 50vw, 25vw"
                   onLoad={() => setIsImageLoading(false)}
                 />
               </>
@@ -187,7 +187,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               initial="hidden"
               animate="visible"
               className={clsx(
-                'self-start max-w-full mb-2 flex-shrink-0 rounded-full font-heading font-semibold text-xs leading-tight shadow-sm px-2.5 sm:px-3 py-1.5 bg-primary/10 text-primary',
+                'self-start max-w-full mb-2 flex-shrink-0 rounded-2xl font-heading font-semibold text-xs leading-tight shadow-sm px-2.5 sm:px-3 py-1.5 bg-primary/10 text-primary',
                 soldOut && 'opacity-60'
               )}
             >
@@ -201,7 +201,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
 
             {/* Price & CTA */}
             <div className="flex items-center justify-between pt-2.5 sm:pt-2 border-t border-base-200 flex-shrink-0">
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 pr-1.5">
                 {onRequest ? (
                   <span className="text-sm font-heading font-semibold text-primary">
                     {t.products.priceOnRequest}
@@ -210,7 +210,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                   <>
                     <span
                       className={clsx(
-                        'text-lg sm:text-base font-heading font-bold',
+                        'text-sm sm:text-base font-heading font-bold',
                         soldOut ? 'text-base-content/40 line-through' : 'text-primary'
                       )}
                     >
