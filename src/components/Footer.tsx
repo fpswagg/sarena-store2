@@ -10,7 +10,7 @@ import { SOCIAL_MEDIA_LABELS, SOCIAL_MEDIA_LOGOS } from '@/lib/socialMedia'
 
 export function Footer() {
   const { locale, t } = useI18n()
-  const { whatsapp, socials } = useSite()
+  const { whatsapp, socials, groups } = useSite()
   const year = new Date().getFullYear()
 
   // WhatsApp from the business in SSS; other networks only if they are filled in there.
@@ -72,6 +72,12 @@ export function Footer() {
           <a href={SSS_URL} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-base-content transition-colors">
             Sarena Shooting Star (SSS)
           </a>
+          {groups.map(group => (
+            <a key={group.url} href={group.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted hover:text-base-content transition-colors">
+              <FaWhatsapp className="w-3.5 h-3.5 text-primary" />
+              {group.label}
+            </a>
+          ))}
           <Link href="/dashboard" prefetch={false} className="text-faint hover:text-base-content transition-colors">
             {t.nav.teamSpace}
           </Link>
