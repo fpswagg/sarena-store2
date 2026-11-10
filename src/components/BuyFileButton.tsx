@@ -56,7 +56,7 @@ export function BuyFileButton({ product, name }: { product: Product; name: strin
           <div className="absolute inset-0 modal-backdrop-blur" onClick={() => !busy && setOpen(false)} />
           <form
             onSubmit={submit}
-            className="relative w-full sm:max-w-md bg-base-200 border border-line-strong animate-fade-in"
+            className="relative w-full sm:max-w-md bg-base-200 rounded-2xl border border-line-strong animate-fade-in"
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-line">
               <h2 className="font-heading font-bold text-lg">{t.digital.title}</h2>
@@ -65,7 +65,7 @@ export function BuyFileButton({ product, name }: { product: Product; name: strin
               </button>
             </div>
             <div className="px-5 py-4 space-y-4">
-              <div className="border border-line bg-base-100 px-4 py-3">
+              <div className="rounded-2xl border border-line bg-base-100 px-4 py-3">
                 <p className="font-medium">{name}</p>
                 <p className="mt-1 font-mono text-xs text-muted">
                   {file.name}

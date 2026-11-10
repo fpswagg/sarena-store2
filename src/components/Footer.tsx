@@ -2,7 +2,9 @@
 
 import type { ComponentType } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { FaWhatsapp } from 'react-icons/fa'
+import { FiHeart } from 'react-icons/fi'
 import { useI18n } from '@/lib/i18n/context'
 import { SSS_URL, whatsappUrl } from '@/lib/site'
 import { useSite } from '@/lib/site-context'
@@ -11,10 +13,10 @@ import { SOCIAL_MEDIA_LABELS, SOCIAL_MEDIA_LOGOS } from '@/lib/socialMedia'
 export function Footer() {
   const { locale, t } = useI18n()
   const { whatsapp, socials, groups } = useSite()
-  const year = new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
 
   // WhatsApp from the business in SSS; other networks only if they are filled in there.
-  const links: { icon: ComponentType<{ className?: string }>; href: string; label: string }[] = [
+  const socialLinks: { icon: ComponentType<{ className?: string }>; href: string; label: string }[] = [
     ...(whatsapp ? [{ icon: FaWhatsapp, href: whatsappUrl(whatsapp), label: 'WhatsApp' }] : []),
     ...socials.map(social => ({
       icon: SOCIAL_MEDIA_LOGOS[social.platform],
@@ -32,62 +34,81 @@ export function Footer() {
   ]
 
   return (
-    <footer className="border-t border-line bg-base-100">
-      <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
-          <Link href="/" className="font-heading font-extrabold text-xl">
-            Sarena<span className="text-primary">.</span>
+    <footer className="bg-base-200/30 border-t border-base-200">
+      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+        <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-between">
+          <Link href="/" className="font-heading font-bold text-lg">
+            <span className="text-gradient">Sarena</span>
           </Link>
-          <p className="mt-3 text-sm text-muted max-w-xs">
-            {locale === 'fr'
-              ? 'Produits, services et SSS, l’outil de gestion pour les commerces.'
-              : 'Products, services and SSS, the management tool for businesses.'}
-          </p>
-          <div className="mt-4 flex gap-2">
-            {links.map(({ icon: Icon, href, label }) => (
-              <a
+
+          <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm order-3 sm:order-2">
+            {nav.map(item => (
+              <Link key={item.href} href={item.href} className="text-base-content/60 hover:text-primary transition-colors">
+                {item.label}
+              </Link>
+            ))}
+            <Link href="/dashboard" prefetch={false} className="text-base-content/40 hover:text-primary transition-colors">
+              {t.nav.teamSpace}
+            </Link>
+          </nav>
+
+          <div className="flex gap-2 order-2 sm:order-3">
+            {socialLinks.map(({ icon: Icon, href, label }) => (
+              <motion.a
                 key={href}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-9 h-9 rounded-xl bg-base-100 border border-base-200 flex items-center justify-center hover:border-primary/30 hover:text-primary transition-colors"
                 aria-label={label}
                 title={label}
-                className="w-9 h-9 border border-line flex items-center justify-center text-muted hover:text-primary hover:border-primary transition-colors"
               >
                 <Icon className="w-4 h-4" />
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>
 
-        <nav className="flex flex-col gap-2 text-sm">
-          {nav.map(item => (
-            <Link key={item.href} href={item.href} className="text-muted hover:text-base-content transition-colors">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex flex-col gap-2 text-sm">
-          <a href={SSS_URL} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-base-content transition-colors">
-            Sarena Shooting Star (SSS)
-          </a>
+        {/* WhatsApp groups and SSS, as small pills */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
           {groups.map(group => (
-            <a key={group.url} href={group.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted hover:text-base-content transition-colors">
-              <FaWhatsapp className="w-3.5 h-3.5 text-primary" />
+            <a
+              key={group.url}
+              href={group.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-base-100 border border-base-200 text-xs font-badge font-medium text-base-content/70 hover:border-primary/30 hover:text-primary transition-colors"
+            >
+              <FaWhatsapp className="w-3.5 h-3.5 text-[#25D366]" />
               {group.label}
             </a>
           ))}
-          <Link href="/dashboard" prefetch={false} className="text-faint hover:text-base-content transition-colors">
-            {t.nav.teamSpace}
-          </Link>
+          <a
+            href={SSS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-badge font-medium hover:bg-primary/20 transition-colors"
+          >
+            Sarena Shooting Star (SSS)
+          </a>
         </div>
       </div>
 
-      <div className="border-t border-line">
-        <p className="max-w-6xl mx-auto px-4 py-4 font-mono text-[11px] text-faint">
-          © {year} Sarena · {locale === 'fr' ? 'Fait au Cameroun' : 'Made in Cameroon'}
-        </p>
+      <div className="border-t border-base-200">
+        <div className="max-w-5xl mx-auto px-4 py-3 sm:py-4">
+          <p className="text-[10px] sm:text-xs text-center text-base-content/40 flex items-center justify-center gap-1.5 cursor-default select-none">
+            © {currentYear} Sarena • {t.footer.madeWith}{' '}
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
+            >
+              <FiHeart className="w-3 h-3 text-secondary fill-secondary" />
+            </motion.span>{' '}
+            {t.footer.inCameroon}
+          </p>
+        </div>
       </div>
     </footer>
   )

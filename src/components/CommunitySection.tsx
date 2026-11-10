@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { FaWhatsapp } from 'react-icons/fa'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { useI18n } from '@/lib/i18n/context'
@@ -16,56 +17,67 @@ export function CommunitySection() {
   const { socials, groups } = useSite()
   if (socials.length === 0 && groups.length === 0) return null
   return (
-    <section id="communaute" className="border-t border-line">
-      <div className="max-w-6xl mx-auto px-4 py-14 sm:py-20">
+    <section id="communaute" className="relative py-16 sm:py-20 bg-base-200/30 overflow-hidden">
+      <div className="absolute top-10 left-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+      <div className="relative max-w-5xl mx-auto px-4">
         <SectionHeader badge={t.community.badge} title={t.community.title} subtitle={t.community.subtitle} />
-        <div className="grid gap-8 lg:grid-cols-2">
-          {groups.length > 0 && (
-            <div>
-              <h3 className="eyebrow text-faint mb-3">{t.community.groups}</h3>
-              <ul className="border border-line">
-                {groups.map(group => (
-                  <li key={group.url} className="border-b border-line last:border-b-0">
-                    <a
-                      href={group.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center gap-3 px-4 py-3 hover:bg-base-200 transition-colors"
-                    >
-                      <FaWhatsapp className="w-4 h-4 text-primary" />
-                      <span className="flex-1">{group.label}</span>
-                      <span className="font-mono text-[11px] text-faint group-hover:text-primary">{t.community.join}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+
+        {groups.length > 0 && (
+          <div className="mb-10">
+            <h3 className="text-center text-sm font-badge font-medium text-base-content/60 mb-4">{t.community.groups}</h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {groups.map(group => (
+                <motion.a
+                  key={group.url}
+                  href={group.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -4 }}
+                  className="group flex items-center gap-4 p-4 rounded-2xl bg-base-100 border border-base-300 hover:border-primary/30 card-depth hover:card-depth-hover transition-colors"
+                >
+                  <span className="w-11 h-11 flex-shrink-0 rounded-xl bg-gradient-to-br from-[#25D366] to-[#128C7E] flex items-center justify-center text-white">
+                    <FaWhatsapp className="w-5 h-5" />
+                  </span>
+                  <span className="flex-1 font-heading font-semibold">{group.label}</span>
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-badge font-medium">
+                    {t.community.join}
+                  </span>
+                </motion.a>
+              ))}
             </div>
-          )}
-          {socials.length > 0 && (
-            <div>
-              <h3 className="eyebrow text-faint mb-3">{t.community.socials}</h3>
-              <ul className="border border-line">
-                {socials.map(social => {
-                  const Icon = SOCIAL_MEDIA_LOGOS[social.platform]
-                  return (
-                    <li key={social.url} className="border-b border-line last:border-b-0">
-                      <a
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-3 px-4 py-3 hover:bg-base-200 transition-colors"
-                      >
-                        <Icon className="w-4 h-4 text-primary" />
-                        <span className="flex-1">{social.label || SOCIAL_MEDIA_LABELS[social.platform][locale]}</span>
-                        <FiArrowUpRight className="w-4 h-4 text-faint group-hover:text-primary" />
-                      </a>
-                    </li>
-                  )
-                })}
-              </ul>
+          </div>
+        )}
+
+        {socials.length > 0 && (
+          <div>
+            <h3 className="text-center text-sm font-badge font-medium text-base-content/60 mb-4">{t.community.socials}</h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {socials.map(social => {
+                const Icon = SOCIAL_MEDIA_LOGOS[social.platform]
+                return (
+                  <motion.a
+                    key={social.url}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -3, scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="group flex items-center gap-2 pl-3 pr-4 py-2 rounded-full bg-base-100 border border-base-300 hover:border-primary/30 card-depth transition-colors"
+                  >
+                    <Icon className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">
+                      {social.label || SOCIAL_MEDIA_LABELS[social.platform][locale]}
+                    </span>
+                    <FiArrowUpRight className="w-3.5 h-3.5 text-base-content/40 group-hover:text-primary" />
+                  </motion.a>
+                )
+              })}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   )

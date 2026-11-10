@@ -1,22 +1,22 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
-import { IBM_Plex_Mono, Space_Grotesk, Syne } from 'next/font/google'
+import { Fredoka, Inter, Poppins } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { config } from '@/lib/config'
 import { I18nProvider } from '@/lib/i18n/context'
 import './globals.css'
 
-const heading = Syne({
+const heading = Poppins({
   subsets: ['latin'],
-  weight: ['600', '700', '800'],
+  weight: ['500', '600', '700', '800', '900'],
   variable: '--font-heading',
   display: 'swap',
 })
-const body = Space_Grotesk({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
-const mono = IBM_Plex_Mono({
+const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
+const badge = Fredoka({
   subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-badge',
   display: 'swap',
 })
 
@@ -25,16 +25,22 @@ export const metadata: Metadata = {
   icons: { icon: '/logo.png', shortcut: '/logo.png', apple: '/logo.png' },
 }
 
-export const viewport: Viewport = { themeColor: '#080C09' }
+export const viewport: Viewport = { themeColor: '#F59E0B' }
+
+// Applies the saved theme before the first paint (no flash).
+const THEME_SCRIPT = `try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}`
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="fr"
-      data-theme="sss"
-      className={`${heading.variable} ${body.variable} ${mono.variable}`}
+      data-theme="dark"
+      className={`${heading.variable} ${body.variable} ${badge.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-base-100 text-base-content">
         <I18nProvider>
           {children}
@@ -44,8 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               style: {
                 background: 'var(--color-base-200)',
                 color: 'var(--color-base-content)',
-                borderRadius: '2px',
-                border: '1px solid #253323',
+                borderRadius: '0.875rem',
               },
             }}
           />

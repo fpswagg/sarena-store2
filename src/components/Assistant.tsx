@@ -181,6 +181,8 @@ export function Assistant({ bot, apiUrl }: { bot: Chatbot; apiUrl: string }) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
             onClick={openPanel}
             className="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-primary text-primary-content shadow-lg shadow-primary/30 flex items-center justify-center"
             aria-label={t.assistant.open}
@@ -242,7 +244,7 @@ export function Assistant({ bot, apiUrl }: { bot: Chatbot; apiUrl: string }) {
                       key={suggestion}
                       type="button"
                       onClick={() => void send(suggestion)}
-                      className="bg-primary/10 text-primary px-3 py-1.5 text-left text-xs font-medium hover:bg-primary/20 transition-colors"
+                      className="rounded-full bg-primary/10 text-primary px-3 py-1.5 text-left text-xs font-medium hover:bg-primary/20 transition-colors"
                     >
                       {suggestion}
                     </button>
@@ -265,7 +267,7 @@ export function Assistant({ bot, apiUrl }: { bot: Chatbot; apiUrl: string }) {
                               : void send(option)
                           }
                           className={clsx(
-                            'px-3 py-1.5 text-xs font-medium transition-colors',
+                            'rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
                             on
                               ? 'bg-primary text-primary-content'
                               : 'bg-primary/10 text-primary hover:bg-primary/20'

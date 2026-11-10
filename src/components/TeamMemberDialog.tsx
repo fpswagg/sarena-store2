@@ -108,6 +108,8 @@ export function TeamMemberDialog({ isOpen, onClose, member }: TeamMemberDialogPr
                           href={social.url}
                           target="_blank"
                           rel="noopener noreferrer"
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
                           className="flex items-center gap-3 p-3 sm:p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors"
                         >
                           <Icon className="w-5 h-5 text-primary shrink-0" />

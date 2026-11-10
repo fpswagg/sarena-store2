@@ -14,7 +14,7 @@ import {
 import { FaWhatsapp } from 'react-icons/fa'
 import { ProductCard } from '@/components/ProductCard'
 import { useI18n } from '@/lib/i18n/context'
-import { badgePop } from '@/lib/motion'
+import { badgePop, whatsappPulse } from '@/lib/motion'
 import { BuyFileButton } from '@/components/BuyFileButton'
 import {
   formatAmount,
@@ -95,7 +95,7 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                 'relative aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-base-200 mb-3 sm:mb-4',
                 soldOut
                   ? 'opacity-70 grayscale-[30%]'
-                  : 'border border-line'
+                  : 'ring-4 ring-primary/20 shadow-2xl shadow-primary/10'
               )}
             >
               {images.length > 0 ? (
@@ -134,14 +134,18 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                 <>
                   <motion.button
                     onClick={previous}
-                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 btn btn-square btn-sm glass"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm glass shadow-lg"
                     aria-label={t.productDetail.previous}
                   >
                     <FiChevronLeft className="w-4 h-4" />
                   </motion.button>
                   <motion.button
                     onClick={next}
-                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 btn btn-square btn-sm glass"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm glass shadow-lg"
                     aria-label={t.productDetail.next}
                   >
                     <FiChevronRight className="w-4 h-4" />
@@ -156,9 +160,9 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                       variants={badgePop}
                       initial="hidden"
                       animate="visible"
-                      className="badge badge-sm sm:badge-md badge-nouveau text-[10px]"
+                      className="badge badge-sm sm:badge-md badge-nouveau border-0 font-badge font-semibold shadow-md"
                     >
-                      {t.products.new}
+                      ✨ {t.products.new}
                     </motion.span>
                   )}
                   {isFeatured(product) && (
@@ -167,9 +171,9 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                       initial="hidden"
                       animate="visible"
                       transition={{ delay: 0.1 }}
-                      className="badge badge-sm sm:badge-md badge-populaire text-[10px]"
+                      className="badge badge-sm sm:badge-md badge-populaire border-0 font-badge font-semibold shadow-md"
                     >
-                      {t.products.featured}
+                      🔥 {t.products.featured}
                     </motion.span>
                   )}
                   {isLimited(product) && (
@@ -178,9 +182,9 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                       initial="hidden"
                       animate="visible"
                       transition={{ delay: 0.2 }}
-                      className="badge badge-sm sm:badge-md badge-limited text-[10px]"
+                      className="badge badge-sm sm:badge-md badge-limited border-0 font-badge font-semibold shadow-md"
                     >
-                      {t.products.limitedStock}
+                      ⚡ {t.products.limitedStock}
                     </motion.span>
                   )}
                 </div>
@@ -193,6 +197,8 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                   <motion.button
                     key={image.url}
                     onClick={() => setSelected(index)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     className={clsx(
                       'relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all',
                       selected === index
@@ -238,7 +244,7 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                 <>
                   <span
                     className={clsx(
-                      'text-3xl sm:text-4xl font-mono',
+                      'text-3xl sm:text-4xl font-heading font-bold',
                       soldOut ? 'text-base-content/40 line-through' : 'text-primary'
                     )}
                   >
@@ -253,26 +259,40 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
             {product.digital ? (
               <div className="mb-6 sm:mb-8 space-y-2">
                 <BuyFileButton product={product} name={name} />
-                <p className="font-mono text-xs text-faint">
+                <p className="text-xs font-badge text-base-content/50">
                   {product.digital.name}
                   {product.digital.sizeBytes ? ` · ${formatBytes(product.digital.sizeBytes, locale)}` : ''}
                 </p>
               </div>
             ) : soldOut ? (
               <div className="mb-6 sm:mb-8 space-y-3">
-                <div className="p-4 border border-line bg-base-200 text-center text-sm text-muted">
+                <div className="p-4 rounded-2xl bg-base-200 text-center text-sm font-medium text-base-content/60">
                   {t.productDetail.unavailable}
                 </div>
-                <a href={link} target="_blank" rel="noopener noreferrer" className="btn btn-ghost border border-line-strong w-full gap-2">
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline w-full gap-2 font-heading"
+                >
                   <FaWhatsapp className="w-5 h-5" />
                   {t.productDetail.askAvailability}
                 </a>
               </div>
             ) : (
-              <a href={link} target="_blank" rel="noopener noreferrer" className="btn btn-primary w-full gap-2.5 mb-6 sm:mb-8">
-                <FaWhatsapp className="w-5 h-5" />
+              <motion.a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={whatsappPulse}
+                animate="animate"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn btn-lg btn-whatsapp w-full gap-2.5 font-heading mb-6 sm:mb-8"
+              >
+                <FaWhatsapp className="w-5 h-5 sm:w-6 sm:h-6" />
                 {t.products.order}
-              </a>
+              </motion.a>
             )}
 
             {variants.length > 0 && (
@@ -285,10 +305,10 @@ export function ProductDetailPage({ product, related }: { product: Product; rela
                     <span
                       key={variant.id}
                       className={clsx(
-                        'px-3 py-1.5 border text-xs font-mono',
+                        'px-3 py-1.5 rounded-full text-xs font-medium',
                         variant.quantity > 0 || product.unlimitedStock
-                          ? 'border-line-strong text-base-content'
-                          : 'border-line text-faint line-through'
+                          ? 'bg-primary/10 text-primary'
+                          : 'bg-base-200 text-base-content/40 line-through'
                       )}
                     >
                       {variant.name}

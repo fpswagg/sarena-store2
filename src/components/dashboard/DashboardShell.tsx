@@ -17,6 +17,7 @@ import {
   FiUsers,
   FiX,
 } from 'react-icons/fi'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import clsx from 'clsx'
 
 type User = { name: string; email: string | null; avatar: string | null; role: string }
@@ -222,6 +223,7 @@ export function DashboardShell({
             </Link>
           </div>
           <div className="flex items-center gap-1 sm:gap-3">
+            <ThemeToggle />
             <UserMenu user={user} />
           </div>
         </div>

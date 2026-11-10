@@ -100,7 +100,7 @@ export function PurchasePage({ token }: { token: string }) {
       {!missing && !link && <span className="loading loading-spinner loading-sm mt-6 block" />}
 
       {link && (
-        <div className="mt-3 border border-line bg-base-200">
+        <div className="mt-3 rounded-2xl border border-line bg-base-200">
           <div className="px-5 py-4 border-b border-line">
             <h1 className="font-heading font-bold text-xl sm:text-2xl">{link.title}</h1>
             <p className="mt-1 font-mono text-primary">{link.amountText}</p>
@@ -117,7 +117,7 @@ export function PurchasePage({ token }: { token: string }) {
                 {t.digital.download}
               </button>
               {files && files.files.length > 0 && (
-                <ul className="border border-line bg-base-100">
+                <ul className="rounded-2xl border border-line bg-base-100">
                   {files.files.map(file => (
                     <li key={file.url} className="border-b border-line last:border-b-0">
                       <a href={file.url} className="flex items-center gap-3 px-4 py-3 hover:bg-base-300 transition-colors">
@@ -152,7 +152,7 @@ export function PurchasePage({ token }: { token: string }) {
                 <span className="mt-1 block text-xs text-faint">{t.digital.phoneHint}</span>
               </label>
               {payment?.status === 'pending' ? (
-                <p className="flex items-start gap-2 text-sm border border-line-strong bg-base-100 px-4 py-3">
+                <p className="flex items-start gap-2 text-sm rounded-2xl border border-line-strong bg-base-100 px-4 py-3">
                   <span className="loading loading-spinner loading-xs mt-0.5" />
                   {fill(t.digital.waiting, { ussd: payment.ussdCode || '*126#' })}
                 </p>

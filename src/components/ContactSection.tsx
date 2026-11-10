@@ -4,7 +4,7 @@ import { useState, type FormEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { FaWhatsapp } from 'react-icons/fa'
-import { FiCpu, FiMail, FiSend, FiX } from 'react-icons/fi'
+import { FiCpu, FiMail, FiMessageCircle, FiSend, FiX } from 'react-icons/fi'
 import { useI18n } from '@/lib/i18n/context'
 import { modalOverlay } from '@/lib/motion'
 import { askAssistant, whatsappUrl } from '@/lib/site'
@@ -16,31 +16,36 @@ export function ContactSection({ hasAssistant }: { hasAssistant: boolean }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <section id="contact" className="border-t border-line bg-base-200">
-      <div className="max-w-6xl mx-auto px-4 py-14 sm:py-20">
+    <section id="contact" className="py-16 sm:py-20">
+      <div className="max-w-5xl mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-2xl"
+          className="max-w-xl mx-auto"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="eyebrow"
+            className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-badge font-medium mb-4"
           >
             {t.contact.badge}
           </motion.span>
-          <h2 className="text-2xl sm:text-3xl font-heading font-bold mt-2 mb-2">{t.contact.title}</h2>
-          <p className="text-muted mb-6">{t.contact.subtitle}</p>
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center mx-auto mb-4">
+            <FiMessageCircle className="w-7 h-7 text-secondary" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-2">{t.contact.title}</h2>
+          <p className="text-sm text-base-content/60 mb-6">{t.contact.subtitle}</p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             {hasAssistant && (
               <motion.button
                 type="button"
                 onClick={() => askAssistant()}
-                className="btn btn-ghost border border-line-strong gap-2 w-full sm:w-auto"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn btn-secondary btn-md gap-2 font-heading w-full sm:w-auto"
               >
                 <FiCpu className="w-4 h-4" />
                 {t.contact.assistant}
@@ -51,7 +56,9 @@ export function ContactSection({ hasAssistant }: { hasAssistant: boolean }) {
                 href={whatsappUrl(whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary gap-2 w-full sm:w-auto"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn btn-whatsapp btn-md gap-2 font-heading w-full sm:w-auto"
               >
                 <FaWhatsapp className="w-4 h-4" />
                 {t.contact.whatsapp}
@@ -61,7 +68,9 @@ export function ContactSection({ hasAssistant }: { hasAssistant: boolean }) {
               <motion.button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="btn btn-ghost border border-line-strong gap-2 w-full sm:w-auto"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn btn-outline btn-md gap-2 font-heading w-full sm:w-auto"
               >
                 <FiMail className="w-4 h-4" />
                 {t.contact.form}
