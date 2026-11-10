@@ -9,6 +9,7 @@ import {
   FiChevronRight,
   FiHeadphones,
   FiHome,
+  FiLink,
   FiLogOut,
   FiMail,
   FiMenu,
@@ -16,7 +17,6 @@ import {
   FiUsers,
   FiX,
 } from 'react-icons/fi'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import clsx from 'clsx'
 
 type User = { name: string; email: string | null; avatar: string | null; role: string }
@@ -27,6 +27,7 @@ const NAV: NavItem[] = [
   { href: '/dashboard/products', label: 'Produits', icon: FiPackage },
   { href: '/dashboard/services', label: 'Services', icon: FiBriefcase },
   { href: '/dashboard/team', label: 'Équipe', icon: FiUsers },
+  { href: '/dashboard/links', label: 'Liens', icon: FiLink },
   { href: '/dashboard/support', label: 'Service client', icon: FiHeadphones },
   { href: '/dashboard/messages', label: 'Messages', icon: FiMail },
 ]
@@ -35,6 +36,7 @@ const LABELS: Record<string, string> = {
   products: 'Produits',
   services: 'Services',
   team: 'Équipe',
+  links: 'Liens',
   support: 'Service client',
   messages: 'Messages',
   new: 'Nouveau',
@@ -173,7 +175,7 @@ function UserMenu({ user }: { user: User }) {
               {user.email && (
                 <p className="text-xs text-base-content/60 mt-1 break-all">{user.email}</p>
               )}
-              <span className="inline-block mt-2 px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
+              <span className="inline-block mt-2 px-2 py-1 text-xs bg-primary/10 text-primary">
                 {user.role}
               </span>
             </div>
@@ -220,7 +222,6 @@ export function DashboardShell({
             </Link>
           </div>
           <div className="flex items-center gap-1 sm:gap-3">
-            <ThemeToggle />
             <UserMenu user={user} />
           </div>
         </div>

@@ -8,7 +8,7 @@ export default function ProductNotFound() {
   const { t } = useI18n()
   return (
     <div className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center">
-      <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 mb-6">
+      <div className="inline-flex items-center justify-center w-24 h-24 bg-primary/10 mb-6">
         <FiPackage className="w-12 h-12 text-primary" />
       </div>
       <h1 className="text-3xl sm:text-4xl font-heading font-bold mb-4">{t.notFound.title}</h1>

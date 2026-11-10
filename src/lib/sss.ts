@@ -3,6 +3,7 @@ import { cache } from 'react'
 import { config, SSS_TAG } from './config'
 import type {
   Chatbot,
+  ClientSite,
   Product,
   Service,
   Site,
@@ -23,7 +24,7 @@ export class SssUnavailableError extends Error {
   }
 }
 
-type RawLink = { platform?: string; label?: string; url?: string }
+type RawLink = { kind?: string; platform?: string; label?: string; url?: string }
 
 type Showcase = {
   store: {
@@ -62,7 +63,15 @@ const PLATFORMS: SocialMediaPlatform[] = [
   'snapchat',
 ]
 
+const KIND_PLATFORM: Record<string, SocialMediaPlatform> = { x: 'twitter', website: 'link', other: 'link', telegram: 'link' }
+
+function isGroup(link: RawLink): boolean {
+  return link.kind === 'whatsapp_group' || /chat\.whatsapp\.com\//i.test(link.url ?? '')
+}
+
 function platformOf(link: RawLink): SocialMediaPlatform {
+  if (link.kind && KIND_PLATFORM[link.kind]) return KIND_PLATFORM[link.kind]
+  if (link.kind && PLATFORMS.includes(link.kind as SocialMediaPlatform)) return link.kind as SocialMediaPlatform
   const hint = `${link.platform ?? ''} ${link.label ?? ''} ${link.url ?? ''}`.toLowerCase()
   return PLATFORMS.find(name => hint.includes(name)) ?? 'link'
 }
@@ -99,6 +108,25 @@ async function fetchShowcase(): Promise<Showcase> {
   return body.data
 }
 
+type GalleryItem = { id: string; url: string; title?: string | null; link?: string | null }
+
+/** Client websites shown on the SSS landing page (same gallery as sss.fpswagg.site). */
+async function fetchClients(): Promise<ClientSite[]> {
+  try {
+    const res = await fetch(`${config.apiUrl}/api/v1/gallery?source=landing&kind=sites&limit=24`, {
+      headers: { accept: 'application/json' },
+      next: { revalidate: config.revalidate, tags: [SSS_TAG] },
+    })
+    if (!res.ok) return []
+    const body = (await res.json()) as { data?: { items?: GalleryItem[] } }
+    return (body.data?.items ?? [])
+      .filter(item => item.url)
+      .map(item => ({ id: item.id, url: item.url, title: item.title ?? '', link: item.link ?? null }))
+  } catch {
+    return []
+  }
+}
+
 export const getSite = cache(async (): Promise<Site> => {
   const data = await fetchShowcase()
   const { store, showcase } = data
@@ -113,9 +141,14 @@ export const getSite = cache(async (): Promise<Site> => {
       city: store.city ?? '',
       country: store.country ?? '',
       siteUrl: config.siteUrl,
+      apiUrl: config.apiUrl,
+      storeSlug: config.storeSlug,
       socials: (data.links ?? [])
-        .filter(link => link.url)
-        .map(link => ({ platform: platformOf(link), url: link.url as string })),
+        .filter(link => link.url && !isGroup(link))
+        .map(link => ({ platform: platformOf(link), url: link.url as string, label: link.label ?? '' })),
+      groups: (data.links ?? [])
+        .filter(link => link.url && isGroup(link))
+        .map(link => ({ label: link.label || 'WhatsApp', url: link.url as string })),
       contactFormEnabled: showcase.contactFormEnabled !== false,
     },
     products: sortByOrder(
@@ -126,7 +159,12 @@ export const getSite = cache(async (): Promise<Site> => {
       data.services.filter(service => service.data?.active !== false),
       service => service.metadata?.order
     ),
-    team: sortByOrder(data.siteTeam ?? [], member => member.order),
+    // Only the people who run Sarena (owner and managers), not the whole staff.
+    team: sortByOrder(
+      (data.siteTeam ?? []).filter(member => !member.role || member.role === 'owner' || member.role === 'manager'),
+      member => member.order
+    ),
+    clients: await fetchClients(),
     chatbot: data.chatbot?.publicKey
       ? { ...data.chatbot, publicKey: config.botKey || data.chatbot.publicKey }
       : null,

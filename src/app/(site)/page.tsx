@@ -8,6 +8,7 @@ export default async function Page() {
       products={site.products}
       services={site.services}
       team={site.team}
+      clients={site.clients}
       hasAssistant={Boolean(site.chatbot)}
     />
   )

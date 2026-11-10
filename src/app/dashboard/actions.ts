@@ -125,3 +125,13 @@ export async function replyToCustomer(sessionId: string, text: string) {
   if (result.ok) revalidatePath('/dashboard', 'layout')
   return result
 }
+
+/* Links: social networks and WhatsApp group invitations shown on the site */
+
+export async function createLink(body: { kind: string; label?: string; url: string }) {
+  return done(await call<{ id: string }>('POST', '/links', body))
+}
+
+export async function deleteLink(linkId: string) {
+  return done(await call('DELETE', `/links/${id(linkId)}`))
+}

@@ -1,4 +1,4 @@
-# Sarena Store
+# Sarena
 
 Le site de Sarena. Toutes les données viennent de SSS (boutique `sarena`) : produits, services, équipe, assistant, messages.
 

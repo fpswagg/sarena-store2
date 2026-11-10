@@ -8,6 +8,7 @@ import { createProduct, updateProduct } from '@/app/dashboard/actions'
 import { formatPrice } from '@/lib/site'
 import type { DashProduct } from '@/lib/dashboard/data'
 import { Field, Toggle } from './fields'
+import { DigitalFileField, type DigitalValue } from './DigitalFileField'
 import { ImagesField } from './ImagesField'
 
 type I18n = { en?: { name?: string; description?: string; category?: string } }
@@ -49,6 +50,11 @@ export function ProductForm({ product }: { product?: DashProduct }) {
   const [images, setImages] = useState<string[]>(
     (product?.images ?? []).map(image => image.url ?? '').filter(Boolean)
   )
+  const [digital, setDigital] = useState<DigitalValue | null>(
+    meta.digital && typeof meta.digital === 'object' && typeof (meta.digital as DigitalValue).key === 'string'
+      ? (meta.digital as DigitalValue)
+      : null
+  )
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
     setForm(current => ({ ...current, [key]: value }))
 
@@ -75,6 +81,8 @@ export function ProductForm({ product }: { product?: DashProduct }) {
       new: form.isNew,
       priceOnRequest: form.priceOnRequest,
     }
+    if (digital) metadata.digital = digital
+    else delete metadata.digital
     if (form.order.trim()) metadata.order = Number(form.order)
     else delete metadata.order
 
@@ -85,7 +93,8 @@ export function ProductForm({ product }: { product?: DashProduct }) {
       category: form.category.trim(),
       price,
       quantity: Math.max(0, Math.floor(Number(form.quantity) || 0)),
-      unlimitedStock: form.unlimitedStock,
+      // A file never runs out.
+      unlimitedStock: digital ? true : form.unlimitedStock,
       active: form.active,
       images: images.map(url => {
         const known = product?.images.find(image => image.url === url)
@@ -223,6 +232,8 @@ export function ProductForm({ product }: { product?: DashProduct }) {
       </div>
 
       <ImagesField label="Photos" value={images} max={12} onChange={setImages} />
+
+      <DigitalFileField value={digital} onChange={setDigital} />
 
       <div className="grid md:grid-cols-2 gap-4">
         <Toggle

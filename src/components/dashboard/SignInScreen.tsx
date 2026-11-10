@@ -34,7 +34,7 @@ export function SignInScreen({ access }: { access: Exclude<DashboardAccess, { ok
                 : "Aucune boutique n'a été choisie à la connexion."}
             </p>
             <p className="text-sm text-base-content/70 mt-2">
-              Reconnectez-vous et choisissez la boutique Sarena dans SSS.
+              Reconnectez-vous et choisissez Sarena dans SSS.
             </p>
             <form action="/auth/sss/sign-out" method="post" className="mt-6">
               <button className="btn btn-primary w-full gap-2 font-heading">

@@ -131,3 +131,9 @@ export const conversationMessages = (storeId: string, id: string) =>
   sssRead<ConversationMessage[]>(
     `${store(storeId)}/client-bot/conversations/${encodeURIComponent(id)}`
   )
+
+export type DashLink = { id: string; label: string; url: string; kind: string }
+
+export async function listLinks(storeId: string): Promise<DashLink[]> {
+  return sssRead<DashLink[]>(`${store(storeId)}/links`)
+}

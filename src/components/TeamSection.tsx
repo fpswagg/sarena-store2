@@ -2,118 +2,55 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import type { TeamMember } from '@/lib/types'
 import { memberTitle } from '@/lib/site'
 import { useI18n } from '@/lib/i18n/context'
-import { fadeUp, staggerContainer } from '@/lib/motion'
+import { SectionHeader } from './SectionHeader'
 import { TeamMemberDialog } from './TeamMemberDialog'
 
-interface TeamSectionProps {
-  members: TeamMember[]
-}
-
-export function TeamSection({ members }: TeamSectionProps) {
+/** The managers of Sarena (the list is filtered to owner/manager in lib/sss.ts). */
+export function TeamSection({ members }: { members: TeamMember[] }) {
   const { t, locale } = useI18n()
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selected, setSelected] = useState<TeamMember | null>(null)
 
   if (members.length === 0) return null
 
-  const handleMemberClick = (member: TeamMember) => {
-    setSelectedMember(member)
-    setIsDialogOpen(true)
-  }
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false)
-    setSelectedMember(null)
-  }
-
   return (
-    <section id="equipe" className="py-16 sm:py-20 bg-base-200/30 relative overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-secondary/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-badge font-medium mb-4"
-          >
-            {t.team.badge}
-          </motion.span>
-          <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-3">{t.team.title}</h2>
-          <p className="text-base-content/60 max-w-md mx-auto">{t.team.subtitle}</p>
-        </motion.div>
-
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6"
-        >
-          {members.map((member, index) => (
-            <motion.div
+    <section id="equipe" className="border-t border-line bg-base-200">
+      <div className="max-w-6xl mx-auto px-4 py-14 sm:py-20">
+        <SectionHeader badge={t.team.badge} title={t.team.title} subtitle={t.team.subtitle} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-line border border-line">
+          {members.map(member => (
+            <button
               key={member.id}
-              variants={fadeUp}
-              whileHover={{ y: -8 }}
-              className="text-center group cursor-pointer"
-              onClick={() => handleMemberClick(member)}
+              type="button"
+              onClick={() => setSelected(member)}
+              className="group bg-base-200 p-4 text-left hover:bg-base-300 transition-colors"
             >
-              <motion.div whileHover={{ scale: 1.05 }} className="relative w-24 h-24 mx-auto mb-4">
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative w-full h-full rounded-2xl overflow-hidden ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all duration-300 shadow-lg">
-                  <Image
-                    src={member.photo || '/default-avatar.svg'}
-                    alt={member.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="96px"
-                  />
-                </div>
-
-                {/* Role badge */}
-                {memberTitle(member, locale) && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 max-w-[9rem] truncate px-2.5 py-0.5 rounded-full bg-base-100 border border-base-200 text-[10px] font-badge font-medium text-primary shadow-sm whitespace-nowrap"
-                  >
-                    {memberTitle(member, locale)}
-                  </motion.span>
-                )}
-              </motion.div>
-
-              <h3 className="mt-5 font-heading font-semibold text-sm group-hover:text-primary transition-colors">
+              <div className="relative aspect-square w-full overflow-hidden bg-base-300 border border-line">
+                <Image
+                  src={member.photo || '/default-avatar.svg'}
+                  alt={member.name}
+                  referrerPolicy="no-referrer"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 50vw, 20vw"
+                />
+              </div>
+              <h3 className="mt-3 font-heading font-semibold text-sm group-hover:text-primary transition-colors">
                 {member.name}
               </h3>
-            </motion.div>
+              {memberTitle(member, locale) && (
+                <p className="mt-0.5 font-mono text-[11px] uppercase tracking-wider text-faint truncate">
+                  {memberTitle(member, locale)}
+                </p>
+              )}
+            </button>
           ))}
-        </motion.div>
+        </div>
       </div>
 
-      {/* Team Member Dialog */}
-      <TeamMemberDialog
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
-        member={selectedMember}
-      />
+      <TeamMemberDialog isOpen={selected !== null} onClose={() => setSelected(null)} member={selected} />
     </section>
   )
 }

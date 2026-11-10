@@ -23,10 +23,10 @@ export function ProductGrid({
   const filters = useMemo(() => {
     const categories = [...new Set(products.map(p => productCategory(p, locale)).filter(Boolean))]
     return [
-      { value: 'all', label: t.products.all, emoji: '🛍️' },
-      ...(products.some(isNew) ? [{ value: 'new', label: t.products.new, emoji: '✨' }] : []),
+      { value: 'all', label: t.products.all, emoji: '' },
+      ...(products.some(isNew) ? [{ value: 'new', label: t.products.new, emoji: '' }] : []),
       ...(products.some(isFeatured)
-        ? [{ value: 'featured', label: t.products.featured, emoji: '🔥' }]
+        ? [{ value: 'featured', label: t.products.featured, emoji: '' }]
         : []),
       ...categories.map(category => ({ value: `c:${category}`, label: category, emoji: '' })),
     ]
@@ -49,17 +49,16 @@ export function ProductGrid({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-start lg:justify-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
+          className="flex justify-start gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0"
         >
           {filters.map(item => (
             <motion.button
               key={item.value}
               onClick={() => setFilter(item.value)}
-              whileTap={{ scale: 0.95 }}
-              className={`flex-shrink-0 px-4 sm:px-5 py-2 rounded-full text-sm font-badge font-medium transition-all duration-300 ${
+              className={`flex-shrink-0 px-4 sm:px-5 py-2 border text-sm transition-colors ${
                 active === item.value
-                  ? 'bg-primary text-primary-content shadow-lg shadow-primary/25'
-                  : 'bg-base-200 hover:bg-base-300 text-base-content/70'
+                  ? 'border-primary text-primary bg-base-200'
+                  : 'border-line text-muted hover:border-line-strong'
               }`}
             >
               {item.emoji && <span className="mr-1.5">{item.emoji}</span>}
@@ -75,8 +74,7 @@ export function ProductGrid({
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-12 sm:py-16"
         >
-          <div className="text-4xl sm:text-5xl mb-4">✨</div>
-          <p className="text-base-content/60 font-medium">{t.products.comingSoon}</p>
+                    <p className="text-base-content/60 font-medium">{t.products.comingSoon}</p>
           <p className="text-sm text-base-content/40 mt-1">{t.products.comingSoonSubtitle}</p>
         </motion.div>
       ) : (

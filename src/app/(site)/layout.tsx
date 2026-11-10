@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite()
   const images = site.ogImageUrl ? [{ url: site.ogImageUrl }] : undefined
   return {
-    title: { default: 'Boutique Sarena', template: '%s | Boutique Sarena' },
+    title: { default: 'Sarena', template: '%s | Sarena' },
     description: site.seoDescription,
     alternates: { canonical: '/' },
     openGraph: {
@@ -18,12 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'fr_CM',
       alternateLocale: 'en_US',
       url: '/',
-      siteName: 'Boutique Sarena',
-      title: 'Boutique Sarena',
+      siteName: 'Sarena',
+      title: 'Sarena',
       description: site.seoDescription,
       images,
     },
-    twitter: { card: 'summary', title: 'Boutique Sarena', description: site.seoDescription },
+    twitter: { card: 'summary', title: 'Sarena', description: site.seoDescription },
   }
 }
 

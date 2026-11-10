@@ -53,6 +53,15 @@ export type Product = {
   inStock: boolean
   variants: ProductVariant[]
   metadata: ProductMetadata | null
+  /** Set when the product is a file sold for download (paid by Mobile Money). */
+  digital?: DigitalInfo | null
+}
+
+export type DigitalInfo = {
+  name: string
+  sizeBytes: number | null
+  contentType: string | null
+  downloadDays: number
 }
 
 export type Service = {
@@ -82,6 +91,8 @@ export type TeamMember = {
   en: { title?: string; bio?: string } | null
   photo: string | null
   order: number | null
+  /** Role in the business: owner, manager, staff… */
+  role?: string | null
   socials: { platform: SocialMediaPlatform; url: string }[]
 }
 
@@ -104,15 +115,24 @@ export type SiteInfo = {
   city: string
   country: string
   siteUrl: string
-  socials: { platform: SocialMediaPlatform; url: string }[]
+  /** SSS API origin, for the calls made from the browser (file purchases). */
+  apiUrl: string
+  storeSlug: string
+  socials: { platform: SocialMediaPlatform; url: string; label: string }[]
+  /** WhatsApp group invitations (chat.whatsapp.com). */
+  groups: { label: string; url: string }[]
   contactFormEnabled: boolean
 }
+
+/** One client website from the SSS landing gallery. */
+export type ClientSite = { id: string; url: string; title: string; link: string | null }
 
 export type Site = {
   info: SiteInfo
   products: Product[]
   services: Service[]
   team: TeamMember[]
+  clients: ClientSite[]
   chatbot: Chatbot | null
   seoTitle: string
   seoDescription: string

@@ -105,3 +105,20 @@ export function homePicks<T extends { metadata: { featured?: boolean } | null }>
   const featured = items.filter(item => item.metadata?.featured)
   return (featured.length > 0 ? featured : items).slice(0, count)
 }
+
+/** SSS public address (the product Sarena builds). */
+export const SSS_URL = 'https://sss.fpswagg.site'
+
+/** 1536000 → "1,5 Mo" */
+export function formatBytes(bytes: number | null | undefined, locale: Locale): string {
+  if (!bytes || bytes < 0) return ''
+  const units = locale === 'fr' ? ['o', 'Ko', 'Mo', 'Go'] : ['B', 'KB', 'MB', 'GB']
+  let value = bytes
+  let unit = 0
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024
+    unit++
+  }
+  const digits = value >= 10 || unit === 0 ? 0 : 1
+  return `${value.toLocaleString(locale === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: digits })} ${units[unit]}`
+}

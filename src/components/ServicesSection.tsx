@@ -68,8 +68,8 @@ export function ServicesSection({
   if (services.length === 0) return null
 
   return (
-    <section id="services" className="py-16 sm:py-20 bg-base-200/30">
-      <div className="max-w-6xl mx-auto px-4">
+    <section id="services" className="border-t border-line">
+      <div className="max-w-6xl mx-auto px-4 py-14 sm:py-20">
         <SectionHeader
           badge={t.services.badge}
           title={t.services.title}
@@ -91,26 +91,25 @@ export function ServicesSection({
               <motion.article
                 key={service.id}
                 variants={fadeUp}
-                whileHover={{ y: -6 }}
-                className="group flex flex-col p-5 rounded-2xl bg-base-100 border border-base-200 hover:border-primary/30 card-depth hover:card-depth-hover transition-colors"
+                className="group flex flex-col p-5 bg-base-200 border border-line hover:border-line-strong transition-colors"
               >
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="w-11 h-11 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 flex-shrink-0 bg-base-100 border border-line flex items-center justify-center">
                     <Icon className="w-5 h-5 text-primary" />
                   </div>
                   <h3 className="font-heading font-semibold leading-snug pt-0.5 group-hover:text-primary transition-colors">
                     {name}
                   </h3>
                 </div>
-                <p className="text-sm text-base-content/60 leading-relaxed flex-1">
+                <p className="text-sm text-muted leading-relaxed flex-1">
                   {serviceDescription(service, locale)}
                 </p>
                 {price && (
-                  <p className="mt-3 self-start px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-badge font-semibold">
+                  <p className="mt-3 self-start font-mono text-sm text-primary">
                     {price}
                   </p>
                 )}
-                <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-base-200">
+                <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-line">
                   <a
                     href={whatsappUrl(whatsapp, serviceMessage(service, locale))}
                     target="_blank"
@@ -137,8 +136,8 @@ export function ServicesSection({
         </motion.div>
 
         {showAllLink && (
-          <div className="text-center mt-8">
-            <Link href="/services" className="btn btn-outline btn-primary gap-2 font-heading">
+          <div className="mt-8">
+            <Link href="/services" className="btn btn-ghost border border-line-strong gap-2">
               {t.services.seeAll}
               <FiArrowRight className="w-4 h-4" />
             </Link>
