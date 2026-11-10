@@ -7,7 +7,8 @@ import {
   FiMail,
   FiPackage,
 } from 'react-icons/fi'
-import { Empty, PageTitle, formatDate } from '@/components/dashboard/fields'
+import { Empty, PageTitle } from '@/components/dashboard/fields'
+import { formatDate } from '@/lib/format-date'
 import { listConversations, listProducts, listRecords, stockSummary } from '@/lib/dashboard/data'
 import { dashboardAccess } from '@/lib/dashboard/session'
 

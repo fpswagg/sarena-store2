@@ -79,10 +79,4 @@ export function Empty({ children }: { children: ReactNode }) {
   )
 }
 
-export function formatDate(value: string): string {
-  return new Intl.DateTimeFormat('fr-FR', {
-    timeZone: 'Africa/Douala',
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value))
-}
+export { formatDate } from '@/lib/format-date'
